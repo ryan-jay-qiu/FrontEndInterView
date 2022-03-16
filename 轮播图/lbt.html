@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        
+        #main {
+            width: 1000px;
+            margin: 0 auto;
+        }
+        
+        #banner {
+            width: 1000px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        #ul-imgs {
+            list-style: none;
+        }
+        
+        #ul-imgs.transition {
+            transition: all .5s linear;
+        }
+        
+        #ul-imgs>li {
+            width: 1000px;
+            float: left;
+        }
+        
+        #ul-imgs img {
+            width: 1000px;
+        }
+        
+        #ul-idxs {
+            width: 100px;
+            margin: 0 auto;
+            list-style: none;
+            position: absolute;
+            bottom: 25px;
+            left: 50%;
+            margin-left: -50px;
+        }
+        
+        #ul-idxs>li {
+            float: left;
+            width: 10px;
+            height: 10px;
+            background-color: #fff;
+            border-radius: 5px;
+            margin: 0 5px;
+            cursor: pointer;
+        }
+        
+        #ul-idxs>li.active {
+            background-color: blue;
+        }
+        
+        #btn-left,
+        #btn-right {
+            width: 60px;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            background-repeat: no-repeat;
+            background-position: center;
+            cursor: pointer;
+        }
+        
+        #btn-left {
+            left: 20px;
+            background-image: url(./left_ar.png);
+        }
+        
+        #btn-right {
+            right: 20px;
+            background-image: url(./right_ar.png);
+        }
+        
+        #btn-left:hover,
+        #btn-right:hover {
+            background-size: 40px 70px
+        }
+    </style>
+</head>
+
+<body>
+    <main id="main">
+        <div id="banner">
+            <div id="btn-left"></div>
+            <ul id="ul-imgs" style="width:6000px; margin-left:0px;">
+                <li>
+                    <a href="#"><img src="./small001309ZlXg61645719189.jpg" alt=""></a>
+                </li>
+                <li>
+                    <a href="#"><img src="./small0028383FvYT1643300918.jpg" alt=""></a>
+                </li>
+                <li>
+                    <a href="#"><img src="./small002919f5FKu1644164959.jpg" alt=""></a>
+                </li>
+                <li>
+                    <a href="#"><img src="./small003031cObfG1643992231.jpg" alt=""></a>
+                </li>
+                <li>
+                    <a href="#"><img src="./small004443MTnFb1644338683.jpg" alt=""></a>
+                </li>
+                <li>
+                    <a href="#"><img src="./small001309ZlXg61645719189.jpg" alt=""></a>
+                </li>
+            </ul>
+            <ul id="ul-idxs">
+                <!--虽然li个数比实际图片张数多1，但小圆点的个数不必多1-->
+                <li class="active"></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+            </ul>
+            <div id="btn-right"></div>
+        </div>
+    </main>
+    <script>
+        var i = 0
+        var time = 3000
+        var uimgs = document.getElementById('ul-imgs')
+        var dot = document.getElementById('ul-idxs')
+        var dots = dot.children
+        var count = 5
+        var wd = 1000
+
+        function moveTo(to) {
+            if (to === -1) {
+                if (i === 0) {
+
+                    i = 4
+                    uimgs.className = 'transition'
+                    uimgs.style.marginLeft = -wd * i + 'px'
+                } else {
+                    console.log(i)
+                    i = i - 1
+                    uimgs.className = 'transition'
+                    uimgs.style.marginLeft = -wd * i + 'px'
+                }
+                for (var li of dots) {
+                    li.className = ''
+                }
+                dots[i].className = 'active'
+                return
+            }
+            i = i + 1
+            uimgs.className = 'transition'
+            uimgs.style.marginLeft = -wd * i + 'px'
+            if (i === count) {
+                i = 0
+                setTimeout(function() {
+                    uimgs.className = ''
+                    uimgs.style.marginLeft = 0
+                }, 1500)
+            }
+            for (var li of dots) {
+                li.className = ''
+            }
+            dots[i].className = 'active'
+        }
+        var timer = setInterval(() => {
+            moveTo()
+        }, 3000)
+        var focus = document.getElementById('banner')
+        focus.onmouseover = function() {
+            clearInterval(timer)
+        }
+        focus.onmouseout = function() {
+            timer = setInterval(() => {
+                moveTo()
+            }, 3000)
+        }
+    </script>
+    <script>
+        var right = document.getElementById('btn-right')
+        right.onclick = function() {
+            moveTo()
+        }
+        var left = document.getElementById('btn-left')
+        left.onclick = function() {
+            moveTo(-1)
+        }
+    </script>
+    <script>
+        for (var j = 0; j < dots.length; j++) {
+            (function(j) {
+                dots[j].onclick = function() {
+                    for (var li of dots) {
+                        li.className = ''
+                    }
+                    dots[j].className = 'active'
+                    uimgs.className = 'transition'
+                    uimgs.style.marginLeft = -wd * j + 'px'
+                }
+            })(j)
+        }
+    </script>
+
+</html>
