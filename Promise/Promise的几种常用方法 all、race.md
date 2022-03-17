@@ -1,10 +1,14 @@
+---
+
+---
+
 # Promise的几种常用方法
 
 Promise作为ES6最重要的特性之一，我们有必要掌握并理解透彻
 
 让我们来直接打印出来Promise看下，console.dir(Promise)
 
-![image-20220317105336745](https://github.com/Coolboyzzzzz/FrontEndInterView/blob/main/%E8%BD%AE%E6%92%AD%E5%9B%BE/small001309ZlXg61645719189.jpg?raw=true)
+![image-20220317105336745](https://github.com/Coolboyzzzzz/FrontEndInterView/blob/main/image/image-20220317105336745.png?raw=true)
 
 
 
@@ -20,7 +24,7 @@ Promise作为ES6最重要的特性之一，我们有必要掌握并理解透彻
 
 
 
-![image-20220317120936086](C:\Users\qqq\AppData\Roaming\Typora\typora-user-images\image-20220317120936086.png)
+![image-20220317120936086](https://github.com/Coolboyzzzzz/FrontEndInterView/blob/main/image/image-20220317120936086.png?raw=true)
 
 代码如下：
 
@@ -94,7 +98,7 @@ race这个单词就是赛跑的意思。
 
 返回的结果：
 
-![image-20220317152232206](C:\Users\qqq\AppData\Roaming\Typora\typora-user-images\image-20220317152232206.png)
+![image-20220317152232206](https://github.com/Coolboyzzzzz/FrontEndInterView/blob/main/image/image-20220317152232206.png?raw=true)
 
 
 
@@ -149,7 +153,11 @@ race这个单词就是赛跑的意思。
 
 运行结果如下
 
-![image-20220317162011202](C:\Users\qqq\AppData\Roaming\Typora\typora-user-images\image-20220317162011202.png)
+![image-20220317162011202](https://github.com/Coolboyzzzzz/FrontEndInterView/blob/main/image/image-20220317162011202.png?raw=true)
+
+等待5秒会打印出失败
+
+![image-20220317171015393](https://github.com/Coolboyzzzzz/FrontEndInterView/blob/main/image/image-20220317171015393.png?raw=true)
 
 首先timeout函数是一个延时5秒的异步操作。我们把这两个返回Promise对象的函数放进race，于是他俩就会赛跑，如果5秒之内图片请求成功了，那么遍进入then方法，执行正常的流程。如果5秒钟图片还未成功返回，那么timeout就跑赢了，timeout函数就会执行完毕并进入then提醒加载超时
 
