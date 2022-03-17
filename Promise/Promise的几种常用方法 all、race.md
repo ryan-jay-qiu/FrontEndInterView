@@ -4,7 +4,7 @@ Promise作为ES6最重要的特性之一，我们有必要掌握并理解透彻
 
 让我们来直接打印出来Promise看下，console.dir(Promise)
 
-![image-20220317105336745](C:\Users\qqq\AppData\Roaming\Typora\typora-user-images\image-20220317105336745.png)
+![image-20220317105336745](https://github.com/Coolboyzzzzz/FrontEndInterView/blob/main/%E8%BD%AE%E6%92%AD%E5%9B%BE/small001309ZlXg61645719189.jpg?raw=true)
 
 
 
