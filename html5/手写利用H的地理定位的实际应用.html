@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <title>Hello, World</title>
+    <style type="text/css">
+        html {
+            height: 100%
+        }
+        
+        body {
+            height: 100%;
+            margin: 0px;
+            padding: 0px
+        }
+        
+        #container {
+            height: 80%
+        }
+    </style>
+    <!-- 引入百度地图 -->
+    <script type="text/javascript" src="https://api.map.baidu.com/api?v=1.0&type=webgl&ak=密钥">
+    </script>
+</head>
+
+<body>
+    <div id="container"></div>
+    <p id="demo">点击按钮获取您与作者的距离：</p>
+    <button onclick="getLocation()">获取我的位置</button>
+    <button onclick="ob()">查看作者位置</button>
+    <button onclick='dis()'>查询距离</button>
+    <script type="text/javascript">
+        var map = new BMapGL.Map("container");
+        // 创建地图实例 
+        var point = new BMapGL.Point(114.522, 38.005)
+            // 创建点坐标 
+        map.centerAndZoom(point, 15);
+        // 初始化地图，设置中心点坐标和地图级别
+        var yourpoint = null; //你的位置
+        var myposition = null; //我的位置
+        var select = false; //设置能够查询两地的距离
+        var x = document.getElementById("demo");
+
+        function getLocation() {
+            if (navigator.geolocation) { //判断浏览器时候支持定位
+                navigator.geolocation.getCurrentPosition(showPosition, (err) => new Error());
+            } else { //利用HTML5的navigator.geolocation.getCurrentPosition()API可以获得坐标，第一个为成功的回调函数，第二个是失败的回调函数
+                x.innerHTML = "该浏览器不支持获取地理位置。";
+            }
+        }
+
+
+        function showPosition(position) {
+            x.innerHTML = "纬度: " + position.coords.latitude +
+                "<br>经度: " + position.coords.longitude;
+            yourpoint = new BMapGL.Point(position.coords.longitude, position.coords.latitude); //转换经纬度
+            map.centerAndZoom(yourpoint, 15); //设置地图位置
+            var marker = new BMapGL.Marker(yourpoint); // 创建标注   
+            map.addOverlay(marker);
+            select = true //打开开关表示可以查询两地位置
+
+        }
+        var myposition = new BMapGL.Point(114.522, 38.005) //我的坐标
+        var marker = new BMapGL.Marker(myposition); // 创建标注   
+        map.addOverlay(marker);
+
+        function dis() {
+            if (!select) return alert('请先查询自己的位置')
+            alert('您到帅哥的距离是：' + (map.getDistance(point, yourpoint)).toFixed(2) + ' 米。'); //获取两点距离,保留小数点后两位        }
+        }
+
+        function ob() {
+            map.centerAndZoom(myposition, 15);
+        } //设置查看我的坐标
+    </script>
+</body>
+
+</html>
