@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link rel="stylesheet" href="css/reset.css" />
+    <link rel="stylesheet" href="css/main.css" />
+    <script type="text/javascript" src="js/jquery-1.12.4.min.js"></script>
+    <script type="text/javascript" src="js/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="js/jquery.mousewheel.js"></script>
+    <title>网络聊天室</title>
+</head>
+
+<body>
+
+    <div class="wrap">
+        <!-- 头部 Header 区域 -->
+        <div class="header">
+            <h3>
+                <div id='name'></div>
+            </h3>
+            <div id='rs'></div>
+            <img src="img/person01.png" alt="icon" />
+        </div>
+        <!-- 中间 聊天内容区域 -->
+        <div class="main">
+            <ul id='talkList' class="talk_list" style="top: 0px;">
+                <li class="left_word">
+                </li>
+                <li class="right_word">
+                </li>
+            </ul>
+            <div class="drag_bar" style="display: none;">
+                <div class="drager ui-draggable ui-draggable-handle" style="display: none; height: 412.628px;"></div>
+            </div>
+        </div>
+        <!-- 底部 消息编辑区域 -->
+        <div class="footer">
+            <img src="img/person02.png" alt="icon" />
+            <input id='content' type="text" placeholder="说的什么吧..." class="input_txt" />
+            <input id='send' type="button" value="发 送" class="input_sub" />
+        </div>
+    </div>
+</body>
+<script type="text/javascript" src="js/scroll.js"></script>
+<script>
+    var usersname = window.sessionStorage.getItem('usersname') //利用H5的sessionStorage临时存储用户名称每一次都会先读本地时候有缓存
+    while (!usersname || !usersname.trim()) {
+        usersname = prompt('请输入用户名') //检测用户名是否输入的合法
+    }
+    window.sessionStorage.setItem('usersname', usersname) //利用setItem存储缓存
+
+    var mingzi = document.getElementById('name')
+    mingzi.innerHTML = `${usersname},你好` //显示用户名
+    var wss = new WebSocket('ws://qiu839169472.e2.luyouxia.net:27647') //建立连接  这里是持续的TCP连接
+    wss.onopen = function() { //刚建立连接触发的事件
+        wss.send(JSON.stringify({
+            'uname': usersname //首先提交用户名
+        }))
+        wss.onmessage = function(msg) { //这是返回消息的时候触发的事件
+            msg = JSON.parse(msg.data) //获取真实的消息
+
+            if (msg.text) { //这里实现的逻辑是 msg是一个对象如果服务器返回的msg对象没有text属性说明是聊天室知识新增了人并没有人发消息，如果含有text属性说明是有人发送了消息
+                var li = document.createElement('li') //创建一个DOM元素
+                msg.uname += ''
+                li.innerHTML = "<div class='tx tx1'>" + msg.uname[0].toUpperCase() + "</div> <span>" + msg.text + "</span>" //给DOM元素添加要显示的文本
+                msg.uname == usersname ? li.className = 'right_word' : li.className = 'left_word' //这里判断发送的消息是自己发的还是别人发的，分别添加不同的类名
+                talkList.appendChild(li) //把li元素追加到聊天框中
+            } else { //msg没有text属性说明知识有人加入了聊天室，则更新列表
+                rs.innerHTML = ''
+                for (var i of msg) {
+                    var div = document.createElement('div') //创建一个元素
+                    i = i.uname + ''
+                    div.innerHTML = i.slice(0, 1).toUpperCase() //渲染用户头像
+                    div.className = 'tx' //给用户头像添加样式
+                    rs.appendChild(div) //追加到列表
+                }
+            }
+        }
+        wss.onclose = function() {
+            console.log('客户端关闭')
+        }
+    }
+    send.onclick = submit
+    document.onkeydown = function(event) { //给聊天框添加enter事件，自动发送
+        if (event.keyCode == 13) return submit();
+    }
+
+    function submit() { //这是发送消息的处理函数
+        var text = document.getElementById('content')
+        wss.send(JSON.stringify({
+            'uname': usersname,
+            'text': text.value
+
+        }))
+        text.value = '' //发送完消息清空输入框
+            // 初始化右侧滚动条
+            // 这个方法定义在scroll.js中
+        resetui() //每发送完消息就滚动到最后一个位置
+    }
+</script>
+
+</html>
