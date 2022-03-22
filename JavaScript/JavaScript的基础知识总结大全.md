@@ -242,7 +242,11 @@ console.log(newWebs);
 
 下面是find方法使用图解，只要迭代器函数中找到匹配项了,就不会往下找了,结果为真就会返回所匹配选项对象的那一项,若结果为假,则返回undefined
 
- 
+ some和every都是遍历数组中的全部数据，知道有一项return的室true/false直接终止
+
+some - true
+
+every-false
 
 ### 4.总结
 
