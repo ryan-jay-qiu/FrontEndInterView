@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<script>
+    class Dep {
+        constructor() {
+            this.subs = []
+        }
+
+        AddSub(sub) {
+            this.subs.push(sub)
+        }
+        notify() {
+            this.subs.forEach(sub => {
+                sub.update()
+            })
+        }
+    }
+</script>
+
+<script>
+    class Watch {
+        constructor(vm, key, cb) {
+            this.vm = vm
+            this.key = key
+            this.cb = cb
+            Dep.target = this
+            this.oldValue = vm[key]
+            Dep.target = null
+        }
+        update() {
+            let newValue = this.vm[this.key]
+            if (newValue === this.oldValue) return
+            this.cb(newValue)
+        }
+    }
+</script>
+
+
+
+
+
+
+
+<script>
+    //模板
+    class Compiler {
+        constructor(vm) {
+                this.el = vm.$el
+                this.vm = vm
+                this.compile(this.el)
+            }
+            //编译模板
+        compile(el) {
+            let childrenNodes = el.childNodes
+            Array.from(childrenNodes).forEach((children) => {
+                if (this.isTextNode(children)) {
+                    this.compileText(children)
+                } else if (this.isElementNode(children)) {
+                    this.compileElement(children)
+                }
+                if (children.childNodes && children.childNodes.length) {
+                    this.compile(children)
+                }
+            })
+        }
+
+        compileText(node) { //编辑文本节点，处理差值表达式.这里有个小细节就是我们本来创立的n个文本节点结果出来了2n个，这是因为html的空白文本节点text,html会在每个标签后面加上一个换行文本节点所以产生了2n个，解决办法把标签写到一样或设置浮动或fontsize为0
+            let reg = /\{\{(.+)\}\}/ //利用正则表达式进行匹配插值表达式,其中.表示进行匹配任意的字符，+代表贪婪匹配，匹配前面的子表达式一次或多次
+            let value = node.textContent
+            if (reg.test(value)) {
+                let key = RegExp.$1.trim() //RegExp时js的内置正则表达式的对象，其中$1表示第一个使用()匹配到的内容，以此类推$2就是第二个原括号匹配到的内容
+                node.textContent = value.replace(reg, this.vm[key])
+                new Watch(this.vm, key, newValue => {
+                    node.textContent = newValue
+                    console.log(newValue)
+                })
+            }
+        }
+        compileElement(node) { //编译元素节点，处理指令
+            Array.from(node.attributes).forEach(attr => {
+                let name = attr.name.slice(2)
+                let value = attr.value
+                this.update(node, name, value)
+            })
+        }
+        update(node, name, value) {
+            let fn = this[name + 'Update']
+            fn && fn(node, this.vm[value])
+        }
+        textUpdate(node, value) {
+            node.textContent = value
+        }
+        modelUpdate(node, value) {
+            node.value = value
+        }
+        isDirective(attrName) {
+            return attrName.startWith('v-')
+        }
+        isTextNode(node) {
+            return node.nodeType === 3 //判断节点是否为文本节点
+        }
+        isElementNode(node) {
+            return node.nodeType === 1 //判断节点是否为元素节点
+        }
+    }
+</script>
+<script>
+    class Observer { //创建观察者类，注意这个地方我走了弯路，由于涉及到对象里面还有对象的可能就必须采用递归的方法去给所有元素去设置setter和getter所有把每一部分的功能尽量封装为一个函数进行调用
+        constructor(data) { //定义属性
+            this.zh(data) //把传进来的值通过这个方法转为响应式
+        }
+        zh(data) {
+            if (typeof data !== 'object' || !data) return //判断是否时引用类型，如果是引用类型的则需要递归就行遍历因为引用类型的数据可能里面还有对象或数组即需要进行递归
+            Object.keys(data).forEach(key => {
+                this.defindProxy1(data, key, data[key]) //循环遍历属性,这里需要注意必须把data[key]以形参传递下去，意思时复制了一份值，不然直接赋值本身会报错
+            })
+        }
+        defindProxy1(data, key, value) {
+            let that = this //注意里面this指向的变化
+            let dep = new Dep()
+            this.zh(value) //注意这是一个完善的地方，这里的情况是，判断传进来的值是个引用类型的，如果是进行递归，直到成为普通值
+            Object.defineProperty(data, key, {
+                enumerable: true,
+                configurable: true,
+                get() {
+                    Dep.target && dep.AddSub(Dep.target)
+                    return value
+                },
+                set(newValue) {
+                    if (newValue === value) return
+                    value = newValue //这里把值赋值给value第三变量，value变量的处置为data[key]
+                    that.zh(newValue) //注意这里也是一个小技巧，这里是为了防止如果给数据新增一个属性的值为引用类型那么也需要把这个属性设置为响应式的
+                    dep.notify()
+                }
+
+            })
+        }
+    }
+</script>
+
+<script>
+    //手写一个实现数据拦截操作把传入的data数据全部转为响应式
+    class Vue { //创建要给Vue的类
+        constructor(option) { //描述他的属性
+            this.$option = option || {}
+            this.$data = option.data || {} // 获取传入的data数据
+            this.$el = typeof(option.el) === 'string' ? document.querySelector(option.el) : option.el //获取dom
+            this._transProxy(this.$data) //定义个进行转化成响应式数据的方法并将data中的数据传入
+            new Observer(this.$data)
+            new Compiler(this)
+
+        }
+        _transProxy(data) {
+            Object.keys(data).forEach((key) => { //提取data中的每个属性并进行遍历
+                Object.defineProperty(this, key, { //由于使用的箭头函数所以这里的zhis指向的是Vue，向Vue根组件中添加data中的所有属性
+                    enumerable: true,
+                    configurable: true,
+                    get() {
+                        return data[key] //读取时返回最新的数据
+                    },
+                    set(newValue) {
+                        if (newValue === data[key]) return //如果最新的值和上次的值一样，则不进行更新
+                        console.log('属性变了')
+                        data[key] = newValue //把最新设置的值进行更新操作
+                    }
+
+                })
+            })
+        }
+    }
+</script>
+
+
+
+<body>
+    <div id='app'>
+        <span v-text='height'>1</span>
+        <span>{{name}}</span>
+        <h3>{{msg}}</h3>
+        <input type="text" v-model='age'>
+        <h3>{{count}}</h3>
+    </div>
+
+</body>
+
+<script>
+    let vm = new Vue({ //实例化Vue并传入参数
+        data: {
+            name: 'xiaohong',
+            age: 15,
+            height: 100,
+            count: 10,
+            msg: 'Hello world'
+        },
+        el: '#app'
+    })
+</script>
+
+
+
+</html>
