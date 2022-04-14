@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        function new1(fn, ...args) {
+            //创建一个空对象
+            let res = {}
+            //2.将空对象的原型指向与构造函数的原型
+            res.__proto__ = fn.prototype
+            //3.改变构造函数的this指向
+            var fn1 = fn.apply(res, args)
+            //4.判断构造函数的返回值类型是否是引用类型，如果是则直接返回这个引用类型，如果不是则返回构造函数体
+            return fn1 instanceof Object ? fn1 : res
+        }
+
+        function a(name) {
+            this.name = name
+            return [{
+                a:1
+            }]
+        }
+        var b = new1(a, 'xiaoming')
+        console.log(b)
+    </script>
+</body>
+
+</html>

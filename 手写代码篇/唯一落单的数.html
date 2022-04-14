@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+    var arr = [1,4,3,3,2,4,1,9,7]
+    var map = new Map()
+    var cur
+    var res = []
+    while(arr.length){
+        cur = arr.pop()
+        if(map.has(cur)){
+            map.set(cur,map.get(cur)+1)
+        }else{
+            map.set(cur,1)
+        }
+
+    }
+    console.log(map)
+    for(let key of map){
+        if(key[1] == 1){
+            console.log(key[0])
+        }
+    }
+   var a =  Array.from(map)
+   for(let i=0;i<a.length;i++){
+       var [c,b] = a[i]
+       if(b == 1){
+           console.log(c)
+       }
+   }
+   //利用API过滤是否第一次出现的位置和最后一个出现的位置i相同
+   var arr1 = [1,4,3,3,2,4,1,9,7]
+        console.log(arr1.filter(item => arr1.indexOf(item) === arr1.lastIndexOf(item)))
+    </script>
+
+
+</body>
+</html>

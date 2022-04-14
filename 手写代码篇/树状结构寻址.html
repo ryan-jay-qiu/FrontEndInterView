@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        const address = [
+            {
+                id: 1, name: '北京市', children: [
+                    { id: 11, name: '海淀市', children: [{ id: 111, name: '中关村' }] },
+                    { id: 12, name: '朝阳区' }
+                ]
+            },
+            { id: 2, name: '天津市' }
+        ]
+        function getNameByid(address, id) {
+            var result = ''
+          function res (address, id) {
+                for (var key of address) {
+                    if (id == key.id) {
+                        result = key.name
+                    }
+                    key.children && res(key.children, id)
+                }
+            }
+          res(address, id)
+           console.log(result)
+
+        }
+        getNameByid(address, 23)
+
+
+
+    </script>
+</body>
+
+</html>

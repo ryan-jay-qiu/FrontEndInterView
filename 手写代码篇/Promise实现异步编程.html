@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+function fetchData(callback){
+    setTimeout(() => {
+        callback('我是返回的数据')
+    }, 5000);
+}
+function promiseFetch () {
+    return new Promise(fetchData)
+}     
+      
+promiseFetch().then((res) =>{
+    console.log(res)
+})        
+        </script>
+</body>
+</html>

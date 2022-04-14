@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        class Lazyman {
+            constructor(name) {
+                console.log(' Hi I am ' + name)
+                this.taskList = []
+                setTimeout(() => {
+                    this.next()
+                }, 0);
+            }
+            sleep(time) {
+                let that = this
+                let a = (function (time) {
+                    return function () {
+                        setTimeout(() => {
+                            console.log(`等待了${time}秒...`)
+                            that.next()
+                        }, time * 1000)
+                    }
+                })(time)
+                this.taskList.push(a)
+                return this
+            }
+            eat(data) {
+                let that = this
+                let a = (function (data) {
+                    return function () {
+
+                        console.log(`I am eating ${data}`)
+                        that.next()
+                    }
+                })(data)
+                this.taskList.push(a)
+                return this
+            }
+            sleepFirst(time) {
+                let that = this
+                let a = (function (time) {
+                    return function () {
+                        setTimeout(() => {
+
+                            console.log(`等待了${time}秒...`)
+                            that.next()
+                        }, time * 1000);
+                    }
+                })(time)
+                this.taskList.unshift(a)
+                return this
+            }
+            next() {
+                let fn = this.taskList.shift()
+                fn && fn()
+            }
+        }
+    //    new Lazyman('tony').sleep(3).eat('lunch').sleepFirst(4)
+function lazyman (data) {
+    return new Lazyman(data)
+}
+lazyman('tony').eat('lunch').eat('dinner').sleepFirst(5).sleep(10).eat('junk food')
+    </script>
+</body>
+
+</html>

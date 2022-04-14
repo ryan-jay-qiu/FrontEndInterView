@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        const add = x => x + 5
+        const multiply = (x) => x * 5
+        const sub = x => x - 5
+        const div = x => x / 5
+      
+
+        const pipe = (...fns) => {
+            return fns.reduce((preFn, curFn) => {
+                return (...args) => {
+                    const result = preFn(...args)
+                     curFn(result)
+                }
+            })
+        }
+        const target = pipe(add, multiply, sub, div)  
+        target(5)
+        console.log(target)
+
+
+    </script>
+</body>
+
+</html>

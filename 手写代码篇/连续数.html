@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        var a = [1, 2, 3, 5, 7, 8, 10, 13, 17, 18, 9, 2]
+        a.sort((a, b) => a - b)
+        var start = 0
+        var cur = 0
+        var result = []
+        for (let i = 0; i < a.length - 1; i++) {
+            if (a[i] + 1 != a[i + 1]) {
+                cur = i
+                if (cur == start) {
+                    result.push(`${a[start]}`)
+                } else {
+                    result.push(`${a[start]}~${a[cur]}`)
+                }
+
+                start = cur + 1
+            }
+        }
+        if (cur == a.length - 2) {
+            result.push(`${a[start]}`)
+        } else {
+            result.push(`${a[start]}~${a[a.length - 1]}`)
+        }
+        console.log(result)
+
+
+
+
+
+    </script>
+</body>
+
+</html>

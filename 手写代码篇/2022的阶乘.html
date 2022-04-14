@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        //求乘法技巧， 首先同样的都先从个位入手，先把两个相乘的数转为字符串数组整体反转
+        //每次运算都会确定一个位置，用其中一个数的整体去×另一个数（从个位开始），每次运算就会确定一个位置
+        //每次留下一个个位数，剩下的无论多大都去进位
+        //for循环两个条件 第一循环被乘数的全部位数。第二如果都×完毕个位也加上了，此时的进位还有那么需要把进位接着进行添加
+        function jz(n, c) {
+            if (c == 1) {
+                return n
+            }
+            return jz(fn(c, n), c - 1)
+        }
+        function fn(c, n) {
+            var c = c - 0
+            var n = n.split('').reverse()
+            let flag = 0
+            let result = []
+            for (var i = 0; i < n.length || flag != 0; i++) {
+                flag = i < n.length ? n[i] * c + flag : flag
+                result[i] = flag % 10
+                flag = Math.floor(flag / 10)
+            }
+            return result.reverse().join('')
+        }
+        console.log(jz('1', '5000'))
+
+
+    </script>
+</body>
+
+</html>

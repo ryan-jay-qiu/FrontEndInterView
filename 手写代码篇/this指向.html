@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    
+    <!--  4.扩展-箭头函数跟普通函数的区别都有哪些？
+函数体内的this对象，就是定义时所在的对象，而不是使用时所在的对象。当对箭头函数使用call()和apply()方法时对函数内的this没有影响。
+不可以当作构造函数，也就是说，不可以使用new命令，否则会抛出一个错误。
+不可以使用arguments对象，该对象在函数体内不存在。如果要用，可以用 rest 参数代替。
+不可以使用yield命令，因此箭头函数不能用作 Generator 函数。
+箭头函数没有原型属性。-->
+    <script>
+        var name = 'window'
+    var person1 = {
+        name:'person1',
+        show1:function () {
+            console.log(this.name)
+        },
+        show2:() => console.log(this.name),
+        show3:function() {
+            return function () {
+                console.log(this)
+            }
+        },
+        show4:function() {
+            return () => console.log(this.name)
+        }
+    }
+    var person2 = {name:'person2'}
+    person1.show1() //person1
+    person1.show1.call(person2) //person2
+    person1.show2() //window
+    person1.show2.call(person2)//baocuo window
+    person1.show3()()//window
+    person1.show3().call(person2) //person2
+    person1.show3.call(person2)() //person2     window
+    //返回的函数体不会立即执行，即返回的函数体中的this在执行时才能确定
+    //var fn =    person1.show3.call(person2)
+    // window.fn()
+    person1.show4()()//window    1
+    //箭头函数是在定义时所在位置的作用域，他的指向是上一个函数中的this，所以这里返回的是外层func中的this即person1对象
+    person1.show4().call(person2)//  baocuo    1
+    person1.show4.call(person2)()   //window   2
+    //把外层函数的this指向变了
+    
+    </script>
+</body>
+</html>

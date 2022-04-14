@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        function add(a, b) {
+            console.log('zhixing')
+            return a + b
+        }
+        function memerize(fn) {
+            var map = {}
+            return function (...arg) {
+                const data = arg
+                if (!map[data]) {
+                    return map[data] = fn(...arg)
+                } else {
+                    console.log(map)
+                    return map[data]
+                }
+
+
+            }
+        }
+
+        const mem = memerize(add)
+        console.log(mem(3, 5))
+        console.log(mem(3, 5))
+        console.log(mem(3, 5))
+        console.log(mem(3, 5))
+
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        //函数柯里化 数值相加 重点是重改string方法，
+        //js中return一个函数体，会自动调用函数的toString方法
+        const foo = function (...arg1) {
+            let res = 0
+            //利用闭包保存总和
+            var a = function (...arg) { //接受
+                for (let key of arg) {
+                    res += key
+                    console.log(res, key)
+                }
+                a.toString = () => {
+                    return res
+                }
+                return a //第二次的时候已经调用的是a了所以在a中再返回a就可以一直循环调用了
+            }
+            a(...arg1) //第一次调用把第一次的值传递过去，这里是外层的
+            return a //这是一个次调用时返回的a，因为第一个调用的是foo函数，所以这里必须在foo函数体中返回a函数才能正常
+        }
+
+        foo(1, 2, 3) == 6
+
+
+    </script>
+</body>
+
+</html>

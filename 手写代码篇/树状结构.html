@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+
+        const entry = {
+            a: {
+                b: {
+                    c: {
+                        dd: 'abcdd'
+                    }
+                },
+                d: {
+                    ee: 'adee'
+                },
+                f: 'af'
+            }
+        }
+        function tree(entry, result = {}, pre = '') {
+            for (let key in entry) {
+                newkey = `${pre}${key}`
+                if (typeof entry[key] == 'object') {
+                    tree(entry[key], result, newkey + '.')
+                } else {
+                    result[`${newkey}`] = entry[key]
+                }
+            }
+            console.log(result)
+        }
+        tree(entry)
+
+
+        const output = {
+            'a.b.c.dd': 'abcdd',
+            'a.d.ee': 'adee',
+            'a.f': 'af'
+        }
+
+    </script>
+</body>
+
+</html>
