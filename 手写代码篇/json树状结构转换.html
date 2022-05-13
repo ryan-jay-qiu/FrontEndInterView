@@ -17,10 +17,12 @@
             { id: 4, title: '标题3-1', parent_id: 3 },
             { id: 5, title: '标题4-1', parent_id: 4 },
             { id: 6, title: '标题2-2', parent_id: 2 },]
+
+
         function tree(flatArr) {
             var result = []
             var map = flatArr.reduce((pre, cur) => {
-                pre[cur.id] = cur
+                pre[cur.id] = Object.assign({},cur)  //程序的健壮性，不会改变原数组
                 return pre
             }, {})
 
@@ -38,6 +40,8 @@
             }
             console.log(result)
         }
+
+        flatArr[0].boj = 5
         tree(flatArr)
 
 

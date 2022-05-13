@@ -19,9 +19,17 @@
             },
             { id: 2, name: '天津市' }
         ]
+            
+
+
+
+
+
+
+
         function getNameByid(address, id) {
             var result = ''
-          function res (address, id) {
+            function res(address, id) {
                 for (var key of address) {
                     if (id == key.id) {
                         result = key.name
@@ -29,8 +37,8 @@
                     key.children && res(key.children, id)
                 }
             }
-          res(address, id)
-           console.log(result)
+            res(address, id)
+            console.log(result)
 
         }
         getNameByid(address, 23)

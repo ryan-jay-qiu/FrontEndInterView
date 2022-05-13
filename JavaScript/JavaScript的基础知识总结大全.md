@@ -334,95 +334,68 @@ Call（函数,参数1,参数2....）（）
 
 ## 19.函数防抖
 
-当持续触发事件时，一定时间段内没有再触发事件，事件处理函数才会执行一次，如果设定的时间到来之前，又一次触发了事件，就重新开始延时。
+1、函数防抖
 
-function debounce(fn, wait) { 
+      函数防抖就是将一个连续不断触发的事件，通过重置计数器的方式，让其在事件触发后的n秒内执行，如果n秒内该事件又再次被触发，那么将重新计算时间。
+    
+      应用场景：
+    
+        防抖常应用于用户进行搜索输入节约请求资源，window触发resize事件时进行防抖只触发一次。
 
- var timeout = null; 
 
- return function() { 
-
- if(timeout !== null) clearTimeout(timeout);      
-
- timeout = setTimeout(fn, wait); 
-
- } 
-
-} 
-
-// 处理函数 
-
-function handle() {    
-
- console.log(Math.random()); 
-
-} 
-
-// 滚动事件
-
-window.addEventListener('scroll', debounce(handle, 1000)); 
+    const debounce = （fn，time）=>{
+        let timer = null
+    //需要返回一个函数出去，外部使用
+    return function (){
+        //先判断timer是否在进行中
+        if（timer）{
+            //进行中，清除定时器，重新计时
+            clearTimer（timer ）
+            timer = setTimeOut(fn,time)
+        }
+        else{
+            timer = setTimeOut(fn,time)
+        }
+    }
 
  
 
- 
 
- 
-
- 
-
- 
-
- 
-
- 
-
- 
-
- 
-
- 
-
- 
 
 ## 20.函数节流（throttle）：
 
-当持续触发事件时，保证一定时间段内只调用一次事件处理函数。
+2、函数节流
 
-var throttle =function(func, delay) { 
+        函数节流是控制事件的执行频率，通过开关（计数器）的方式，将不断触发的事件，在一个周期内，每隔一个时间节点触发一次，比如：1s触发一次、2s触发一次
+        应用场景：
+    
+        1、scroll事件，滚动监听事件，每隔n秒计算一次位置信息；
+    
+        2、浏览器播放事件，每隔n秒计算一次进度信息等。
 
- var prev = Date.now(); 
 
- return function() { 
 
- var context = this;
-
- var args = arguments; 
-
- var now = Date.now(); 
-
- if (now - prev >= delay) { 
-
-  func.apply(context, args);              
-
-  prev = Date.now();
-
- } 
-
- } 
-
-}
-
-function handle() {        
-
- console.log(Math.random()); 
-
-}     
-
-window.addEventListener('scroll', throttle(handle, 1000)); 
+    const throtting = （fn,time）=>{
+    //定义一个阀门并赋值为true，表示当前阀门处于打开状态，可以执行延时并触发事件
+    let flag = true 
+     
+    //如果阀门处于关闭状态，表示当前正在执行延时，那么直接return当前函数 不在执行
+    if（！flag）return；
+    
+    //否则表示阀门处于打开状态，可以执行延时并触发事件回调
+    flag = false//触发新的延时之前先关闭阀门 
+    setTimeOut(()=>{
+        fn()//执行事件处理回调
+        flag = true //执行完毕 打开阀门 将阀门处于可进行状态 好进行下一次延时 
+    },time)
+    }
 
  
 
- 
+
+
+
+
 
 ## 21.什么是虚拟DOM
 
@@ -589,17 +562,19 @@ push：返回添加完成后的数组的长度（改变原数组）；
 
 shift：移除并返回数组的第一个元素（改变原数组）； 
 
-unshift:在数组头部插入一个元素 
+unshift:在数组头部插入一个元素 （改变原数组）
+
+splice：插入，删除或替换数组的元素 （改变原数组）
+
+reverse：翻转数组（改变原数组）； 
+
+sort：排序（改变原数组）； 
 
 slice：slice(下标，个数)返回裁剪后的数组（不改变原数组）； 
-
-splice：插入，删除或替换数组的元素 
 
 concat：合并数组返回组合数组（不改变原数组）； 
 
 join：将数组用标识符链接成字符串返回拼接好的字符串（不改变原数组）； 
-
-reverse：翻转数组（改变原数组）； 
 
 toString:将数组转换成一个字符串； 
 
@@ -611,6 +586,18 @@ every：主要用于检查数组中每个元素是否符合函数的条件，如
 
 indexOf：主要用于在数组中查找元素，并把元素的位置返回来。
 
+1.every和some,返回true或false
+every：全部条件都正确才返回true
+some：有一个条件正确就返回true
+
+findIndex：返回第一个符合条件元素的索引。剩余的不会执行
+
+2.filter和find,返回数组中的元素
+filter：返回满足条件的集合，一个新数组（筛选出满足条件的新数组）
+find:返回符合条件的第一个数组元素值，没有则返回 undefined
+
+
+
 ## 27.巧妙地交换变量
 
 a=a+b
@@ -619,4 +606,38 @@ b=a-b
 
 a=a-b
 
- 
+ 2.[a,b] = [b,a]
+
+
+
+# 监听事件方法
+
+：addEventListener(<event-name>, <callback>, <use-capture>)
+
+移除监听事件方法：removeEventListener(event, function)
+
+其中 [addEventListener](https://so.csdn.net/so/search?q=addEventListener&spm=1001.2101.3001.7020)(event, function, useCapture) 有三个参数，分别代表：
+
+第一个参数 event-name (String)：所要监听的事件名称或类型，
+
+　　如：鼠标事件(mousedown, mouseup, mousemove, mouseover, mouseout, mouseclick, dblclick 等)
+
+　　　　键盘事件(keydown, keyup, keypress 等)
+
+　　　　等用户触发的事件
+
+第二个参数 callback (function)：监听到事件后所要执行的操作，即事件触发时的回调
+
+第三个参数 use-capture (boolean)：决定事件在哪个阶段被触发并执行相应的回调函数
+
+　　false：冒泡阶段触发，true： 捕获阶段触发。默认值是 false，即冒泡触发
+
+冒泡：内部元素的事件会先被触发，然后再触发外部元素（子元素先触发，父元素再触发）。由内及外 
+
+捕获：外部元素的事件会先被触发，然后才会触发内部元素的事件（父元素先触发，子元素再触发）。由外到内
+
+
+
+# cookie sessionStorage localStorage 区别 
+
+参考回答： cookie 数据始终在同源的http 请求中携带(即使不需要)，即cookie 在浏览器和服务器间 来回传递 cookie 数据还有路径（path）的概念，可以限制。cookie 只属于某个路径下 存储大小限制也不同，cookie 数据不能超过 4K，同时因为每次http 请求都会携带cookie， 所以cookie 只适合保存很小的数据，如回话标识。 webStorage 虽然也有存储大小的限制，但是比 cookie 大得多，可以达到 5M 或更大 数据的有效期不同sessionStorage：仅在当前的浏览器窗口关闭有效；localStorage：始 终有效，窗口或浏览器关闭也一直保存，因此用作持久数据；cookie：只在设置的 cookie 过期时间之前一直有效，即使窗口和浏览器关闭 作用域不同sessionStorage：不在不同的浏览器窗口中共享，即使是同一个页面； localStorage：在所有同源窗口都是共享的；cookie：也是在所有同源窗口中共享 的

@@ -24,25 +24,42 @@
                 f: 'af'
             }
         }
-        function tree(entry, result = {}, pre = '') {
-            for (let key in entry) {
-                newkey = `${pre}${key}`
-                if (typeof entry[key] == 'object') {
-                    tree(entry[key], result, newkey + '.')
-                } else {
-                    result[`${newkey}`] = entry[key]
-                }
-            }
-            console.log(result)
-        }
-        tree(entry)
-
-
         const output = {
             'a.b.c.dd': 'abcdd',
             'a.d.ee': 'adee',
             'a.f': 'af'
         }
+        var result = {}
+        function tree(entry, str = '') {
+            for (var key in entry) {
+                if (entry[key] instanceof Object) {
+                    tree(entry[key], str + key + '.')
+                } else {
+                    result[`${str}${key}`] = entry[key]
+                }
+
+            }
+
+        }
+        tree(entry)
+        console.log(result)
+
+
+
+        // function tree(entry, result = {}, pre = '') {
+        //     for (let key in entry) {
+        //         newkey = `${pre}${key}`
+        //         if (typeof entry[key] == 'object') {
+        //             tree(entry[key], result, newkey + '.')
+        //         } else {
+        //             result[`${newkey}`] = entry[key]
+        //         }
+        //     }
+        //     console.log(result)
+        // }
+        // tree(entry)
+
+
 
     </script>
 </body>

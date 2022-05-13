@@ -1,0 +1,25 @@
+<html>
+
+<head></head>
+
+<body>
+  <div></div>
+  <p></p>
+</body>
+
+</html>
+<script>
+  var dom = document.getElementsByTagName('html') //利用栈，遍历数
+  var res = []
+  var stack = [dom]
+  while (stack.length) {
+    let cur = stack.shift()
+    for (var i = 0; i < cur.length; i++) {
+      res.push(cur[i].localName)
+      cur[i].children && stack.push(cur[i].children)
+    }
+  }
+  res.pop()
+  console.log(res)
+
+</script>
