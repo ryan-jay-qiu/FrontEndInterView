@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+    <title>框选checkbox</title>
+</head>
+
+<body>
+    <ul>
+        <li>
+            <input type="checkbox" name="" id="">
+            <input type="checkbox" name="" id="">
+            <input type="checkbox" name="" id="">
+            <input type="checkbox" name="" id="">
+            <input type="checkbox" name="" id="">
+            <input type="checkbox" name="" id="">
+        </li>
+        <li>
+            <input type="checkbox" name="" id="">
+            <input type="checkbox" name="" id="">
+            <input type="checkbox" name="" id="">
+            <input type="checkbox" name="" id="">
+            <input type="checkbox" name="" id="">
+            <input type="checkbox" name="" id="">
+        </li>
+        <li>
+            <input type="checkbox" name="" id="">
+            <input type="checkbox" name="" id="">
+            <input type="checkbox" name="" id="">
+            <input type="checkbox" name="" id="">
+            <input type="checkbox" name="" id="">
+            <input type="checkbox" name="" id="">
+        </li>
+    </ul>
+    <style>
+        * {
+            /* 避免出现蓝色选中阴影，不允许用户选中 */
+            -moz-user-select: none;
+            -webkit-user-select: none;
+        }
+
+        /* 用户点击是拉出的盒子 */
+        .box {
+            border: 1px dashed #000;
+            width: 0;
+            height: 0;
+            position: absolute;
+            opacity: 0.5;
+            cursor: move;
+        }
+
+        li {
+            list-style: none;
+        }
+
+        /*修改默认的选中样式*/
+        input[type=checkbox] {
+            width: 20px;
+            height: 20px;
+            position: relative;
+        }
+
+        input[type=checkbox]::after {
+            position: absolute;
+            top: 0;
+            width: 20px;
+            height: 20px;
+            display: inline-block;
+            visibility: visible;
+            padding-left: 0px;
+            text-align: center;
+            content: ' ';
+            border-radius: 3px
+        }
+
+        input[type=checkbox]:checked::after {
+            /* content: "✓"; */
+            content: "✔";
+            color: #fff !important;
+            font-size: 12px;
+            font-weight: bold;
+            background-color: rgb(0, 113, 253);
+        }
+    </style>
+    <script>
+        //入口函数，保证dom元素已经加载完毕
+        window.onload = function (e) {
+            e = e || window.event; //考虑兼容性问题
+            let x0 = 0, y0 = 0 //设置开始的坐标
+            let widthBox, heightBox, leftBox, topBox;//定义盒子的宽高top和left
+            let flag = true //设置一个flag标志，没有盒子的时候不会执行鼠标移动事件
+            var checkBox = document.getElementsByTagName('input')
+            document.onmousedown = function (e) { //鼠标单机摁下
+                if (!flag) return
+                x0 = e.pageX;
+                y0 = e.pageY;
+                // 在页面创建 box
+                var dashedBox = document.createElement("div");
+                dashedBox.id = "dashedBox";
+                dashedBox.className = "box";
+                //默认先隐藏
+                dashedBox.style.display = "none";
+                document.body.appendChild(dashedBox);
+                flag = false
+            }
+            // 鼠标移动
+            document.onmousemove = function (e) {
+                if (flag) return
+                // 终点的横坐标
+                let x1 = e.pageX - x0
+                // 终点的纵坐标
+                let y1 = e.pageY - y0
+                //判断越界处理，因为从起始位置可以向四个方向进行操作所以分别对他们进行处理
+                // 对终点相对于起点的位置进行分类讨论
+                if (x1 >= 0 && y1 >= 0) {
+                    //如果是从当前往右下开始
+                    //此时宽高都是正值直接赋值
+                    //top和left是固定位置
+                    widthBox = x1
+                    leftBox = x0;
+                    heightBox = y1;
+                    topBox = y0;
+                } else if (x1 > 0 && y1 < 0) {
+                    //如果是从当前往右上开始
+                    //此时宽是负，高是正
+                    //top跟随鼠标
+                    //left是固定位置
+                    widthBox = e.pageX - x0
+                    leftBox = x0;
+                    heightBox = y0 - e.pageY
+                    topBox = e.pageY;
+                } else if (x1 < 0 && y1 > 0) {
+                    //如果是从当前往左下开始
+                    //此时宽是正，高是负
+                    //left跟随鼠标
+                    //top是固定位置
+                    widthBox = x0 - e.pageX
+                    leftBox = e.pageX;
+                    heightBox = e.pageY - y0
+                    topBox = y0;
+                }
+                else if (x1 < 0 && y1 < 0) {
+                    //如果是从当前往左上开始
+                    //此时宽高都为负
+                    //left和top都额、跟随鼠标
+                    widthBox = x0 - e.pageX
+                    leftBox = e.pageX;
+                    heightBox = y0 - e.pageY
+                    topBox = e.pageY;
+                }
+                //更新盒子尺寸 //显示盒子
+                var box = $('#dashedBox')
+
+                box.css({ display: 'block', width: widthBox + 'px', height: heightBox + 'px', top: topBox + 'px', left: leftBox + 'px' })
+                //判断选中那个chekcbox
+                var cur = Array.from(checkBox)
+                cur.forEach((item, index) => {
+                    if (isOverlap(box, checkBox[index])) {
+                        checkBox[index].checked = true
+                    } else {
+                        checkBox[index].checked = false
+                    }
+
+                })
+            }
+
+            //  }
+            // 鼠标抬起
+            document.onmouseup = function (e) {
+                $("#dashedBox").remove() //鼠标抬起直接移出
+                flag = true //设置一个状态flag
+            }
+        }
+        //判断两个div是否有相交
+        function isOverlap(idOne, idTwo) {
+            var objOne = $(idOne),
+                objTwo = $(idTwo),
+                offsetOne = objOne.offset(),
+                offsetTwo = objTwo.offset(),
+                topOne = offsetOne.top,
+                topTwo = offsetTwo.top,
+                leftOne = offsetOne.left,
+                leftTwo = offsetTwo.left,
+                widthOne = objOne.width(),
+                widthTwo = objTwo.width(),
+                heightOne = objOne.height(),
+                heightTwo = objTwo.height();
+            var leftTop = leftTwo > leftOne && leftTwo < leftOne + widthOne
+                && topTwo > topOne && topTwo < topOne + heightOne,
+                rightTop = leftTwo + widthTwo > leftOne && leftTwo + widthTwo < leftOne + widthOne
+                    && topTwo > topOne && topTwo < topOne + heightOne,
+                leftBottom = leftTwo > leftOne && leftTwo < leftOne + widthOne
+                    && topTwo + heightTwo > topOne && topTwo + heightTwo < topOne + heightOne,
+                rightBottom = leftTwo + widthTwo > leftOne && leftTwo + widthTwo < leftOne + widthOne
+                    && topTwo + heightTwo > topOne && topTwo + heightTwo < topOne + heightOne;
+            return leftTop || rightTop || leftBottom || rightBottom;
+        }
+
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        let url = 'http://www.domain.com/?user=anonymous&id=123&id=456&city=%E5%8C%97%E4%BA%AC&enabled&id=456&id=456&id=456&id=456&user=anonymous';
+        parseParam(url)
+        /* 结果
+        { user: 'anonymous',
+          id: [ 123, 456 ], // 重复出现的 key 要组装成数组，能被转成数字的就转成数字类型
+          city: '北京', // 中文需解码
+          enabled: true, // 未指定值得 key 约定为 true
+        }
+        */
+        function parseParam(url) {
+            let result = {}
+            let str = url.split('?')
+            str = str[1].split('&')
+            for (var key of str) {
+                let news = key.split('=')
+                if (!news[1]) news[1] = true
+                if (news[1][0] == "%") news[1] = decodeURIComponent(news[1])
+                if (result[news[0]]) {
+
+                    result[news[0]] = [].concat(result[news[0]], /^\d+$/.test(news[1]) ? news[1] - 0 : news[1])
+                } else {
+                    result[news[0]] = /^\d+$/.test(news[1]) ? news[1] - 0 : news[1]
+                }
+
+            }
+            console.log(result)
+        }
+
+
+
+
+
+    </script>
+</body>
+
+</html>
