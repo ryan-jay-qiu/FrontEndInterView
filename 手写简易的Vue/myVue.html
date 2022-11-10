@@ -2,216 +2,230 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
 </head>
 <script>
-    //简述： 当你把一个普通的 JavaScript 对象传入 Vue 实例作为 data 选项，Vue 将遍历此对象所有的 property，并使用 Object.defineProperty 把这些 property 全部转为 getter/setter。这些 getter/setter 对用户来说是不可见的，但是在内部它们让 Vue 能够追踪依赖，在 property 被访问和修改时通知变更。每个组件实例都对应一个 watcher 实例，它会在组件渲染的过程中把“接触”过的数据 property 记录为依赖。之后当依赖项的 setter 触发时，会通知 watcher，从而使它关联的组件重新渲染。
-    //深入理解： 监听器 Observer：对数据对象进行遍历，包括子属性对象的属性，利用 Object.defineProperty() 对属性都加上 setter 和 getter。这样的话，给这个对象的某个值赋值，就会触发 setter，那么就能监听到了数据变化。
-    //解析器 Compile：解析 Vue 模板指令，将模板中的变量都替换成数据，然后初始化渲染页面视图，并将每个指令对应的节点绑定更新函数，添加监听数据的订阅者，一旦数据有变动，收到通知，调用更新函数进行数据更新。
-    //订阅者 Watcher：Watcher 订阅者是 Observer 和 Compile 之间通信的桥梁 ，主要的任务是订阅 Observer 中的属性值变化的消息，当收到属性值变化的消息时，触发解析器 Compile 中对应的更新函数。每个组件实例都有相应的 watcher 实例对象，它会在组件渲染的过程中把属性记录为依赖，之后当依赖项的 setter 被调用时，会通知 watcher 重新计算，从而致使它关联的组件得以更新——这是一个典型的观察者模式订阅器 
-    //Dep：订阅器采用 发布-订阅 设计模式，用来收集订阅者 Watcher，对监听器 Observer 和 订阅者 Watcher 进行统一管理。
-
-    class Dep {
-        constructor() {
-            this.subs = []
-        }
-
-        AddSub(sub) {
-            this.subs.push(sub)
-        }
-        notify() {
-            this.subs.forEach(sub => {
-                sub.update()
-            })
-        }
+  //简述： 当你把一个普通的 JavaScript 对象传入 Vue 实例作为 data 选项，Vue 将遍历此对象所有的 property，并使用 Object.defineProperty 把这些 property 全部转为 getter/setter。这些 getter/setter 对用户来说是不可见的，但是在内部它们让 Vue 能够追踪依赖，在 property 被访问和修改时通知变更。每个组件实例都对应一个 watcher 实例，它会在组件渲染的过程中把“接触”过的数据 property 记录为依赖。之后当依赖项的 setter 触发时，会通知 watcher，从而使它关联的组件重新渲染。
+  //深入理解： 监听器 Observer：对数据对象进行遍历，包括子属性对象的属性，利用 Object.defineProperty() 对属性都加上 setter 和 getter。这样的话，给这个对象的某个值赋值，就会触发 setter，那么就能监听到了数据变化。
+  //解析器 Compile：解析 Vue 模板指令，将模板中的变量都替换成数据，然后初始化渲染页面视图，并将每个指令对应的节点绑定更新函数，添加监听数据的订阅者，一旦数据有变动，收到通知，调用更新函数进行数据更新。
+  //订阅者 Watcher：Watcher 订阅者是 Observer 和 Compile 之间通信的桥梁 ，主要的任务是订阅 Observer 中的属性值变化的消息，当收到属性值变化的消息时，触发解析器 Compile 中对应的更新函数。每个组件实例都有相应的 watcher 实例对象，它会在组件渲染的过程中把属性记录为依赖，之后当依赖项的 setter 被调用时，会通知 watcher 重新计算，从而致使它关联的组件得以更新——这是一个典型的观察者模式订阅器 
+  //Dep：订阅器采用 发布-订阅 设计模式，用来收集订阅者 Watcher，对监听器 Observer 和 订阅者 Watcher 进行统一管理。
+//每一个data中的属性都会产生一个dep实例  通过observer的get触发dep的依赖收集，因为compiler进行模板转换时会访问到所有涉及再页面的数据即触发每个属性的get 以及 把这个依赖 通过调用wather产生一个订阅者  主要记录的就是 依赖属性和dom的绑定。
+//每个依赖属性都会进入到一个dep中，所以当触发他得set时会调用dep的notify 他会触发watcher中每个与之dom绑定的updata 
+// Dep.target即是watcher  相当于observer的get之前声明之前建立dep示例  get中产生闭包
+  class Dep {
+    constructor() {
+      this.subs = []
     }
+    AddSub(watcher) {
+      this.subs.push(watcher)
+    }
+    notify(newValue) {
+      this.subs.forEach(sub => {
+        sub.update(newValue)
+      })
+    }
+  }
 </script>
 
 <script>
-    class Watch {
-        constructor(vm, key, cb) {
-            this.vm = vm
-            this.key = key
-            this.cb = cb
-            Dep.target = this
-            this.oldValue = vm[key]
-            Dep.target = null
-        }
-        update() {
-            let newValue = this.vm[this.key]
-            if (newValue === this.oldValue) return
-            this.cb(newValue)
-            console.log(this.key)
-        }
+  class Watch {
+    constructor(vm, key, cb) {
+      this.vm = vm
+      this.key = key
+      this.cb = cb
+      Dep.target = this
+      this.oldValue = vm[key]
+      Dep.target = null
     }
-</script>
-
-
-
-
-
-
-
-<script>
-    //模板
-    class Compiler {
-        constructor(vm) {
-                this.el = vm.$el
-                this.vm = vm
-                this.compile(this.el)
-            }
-            //编译模板
-        compile(el) { //解析器 Compile：解析 Vue 模板指令，将模板中的变量都替换成数据，然后初始化渲染页面视图，并将每个指令对应的节点绑定更新函数，
-            //添加监听数据的订阅者，一旦数据有变动，收到通知，调用更新函数进行数据更新。
-            let childrenNodes = el.childNodes
-            Array.from(childrenNodes).forEach((children) => {
-                if (this.isTextNode(children)) {
-                    this.compileText(children)
-                } else if (this.isElementNode(children)) {
-                    this.compileElement(children)
-                }
-                if (children.childNodes && children.childNodes.length) {
-                    this.compile(children)
-                }
-            })
-        }
-
-        compileText(node) { //编辑文本节点，处理差值表达式.这里有个小细节就是我们本来创立的n个文本节点结果出来了2n个，这是因为html的空白文本节点text,html会在每个标签后面加上一个换行文本节点所以产生了2n个，解决办法把标签写到一样或设置浮动或fontsize为0
-            let reg = /\{\{(.+)\}\}/ //利用正则表达式进行匹配插值表达式,其中.表示进行匹配任意的字符，+代表贪婪匹配，匹配前面的子表达式一次或多次
-            let value = node.textContent
-            if (reg.test(value)) {
-                let key = RegExp.$1.trim() //RegExp时js的内置正则表达式的对象，其中$1表示第一个使用()匹配到的内容，以此类推$2就是第二个原括号匹配到的内容
-                node.textContent = value.replace(reg, this.vm[key])
-                new Watch(this.vm, key, newValue => {
-                    node.textContent = newValue
-                    console.log(newValue)
-                })
-            }
-        }
-        compileElement(node) { //编译元素节点，处理指令
-            Array.from(node.attributes).forEach(attr => {
-                let name = attr.name.slice(2)
-                let value = attr.value
-                this.update(node, name, value)
-            })
-        }
-        update(node, name, value) {
-            let fn = this[name + 'Update']
-            fn && fn(node, this.vm[value])
-        }
-        textUpdate(node, value) {
-            node.textContent = value
-        }
-        modelUpdate(node, value) {
-            node.value = value
-        }
-        isDirective(attrName) {
-            return attrName.startWith('v-')
-        }
-        isTextNode(node) {
-            return node.nodeType === 3 //判断节点是否为文本节点
-        }
-        isElementNode(node) {
-            return node.nodeType === 1 //判断节点是否为元素节点
-        }
+    update(newValue) {
+      if (newValue === this.oldValue) return
+      this.cb(newValue)
+      console.log(this.key)
     }
-</script>
-<script>
-    class Observer { //创建观察者类，注意这个地方我走了弯路，由于涉及到对象里面还有对象的可能就必须采用递归的方法去给所有元素去设置setter和getter所有把每一部分的功能尽量封装为一个函数进行调用
-        //监听器 Observer：对数据对象进行遍历，包括子属性对象的属性，利用 Object.defineProperty() 对属性都加上 setter 和 getter。这样的话，给这个对象的某个值赋值，就会触发 setter，那么就能监听到了数据变化。
-        constructor(data) { //定义属性
-            this.zh(data) //把传进来的值通过这个方法转为响应式
-        }
-        zh(data) {
-            if (typeof data !== 'object' || !data) return //判断是否时引用类型，如果是引用类型的则需要递归就行遍历因为引用类型的数据可能里面还有对象或数组即需要进行递归
-            Object.keys(data).forEach(key => {
-                this.defindProxy1(data, key, data[key]) //循环遍历属性,这里需要注意必须把data[key]以形参传递下去，意思时复制了一份值，不然直接赋值本身会报错
-            })
-        }
-        defindProxy1(data, key, value) {
-            let that = this //注意里面this指向的变化
-            let dep = new Dep()
-            this.zh(value) //注意这是一个完善的地方，这里的情况是，判断传进来的值是个引用类型的，如果是进行递归，直到成为普通值
-            Object.defineProperty(data, key, {
-                enumerable: true,
-                configurable: true,
-                get() {
-                    Dep.target && dep.AddSub(Dep.target)
-                    console.log(Dep.target)
-                    return value
-                },
-                set(newValue) {
-                    if (newValue === value) return
-                    console.log('woye')
-                    value = newValue //这里把值赋值给value第三变量，value变量的处置为data[key]
-                    that.zh(newValue) //注意这里也是一个小技巧，这里是为了防止如果给数据新增一个属性的值为引用类型那么也需要把这个属性设置为响应式的
-                    dep.notify()
-                    console.dir(dep.notify)
-                }
-
-            })
-        }
-    }
+  }
 </script>
 
 <script>
-    //手写一个实现数据拦截操作把传入的data数据全部转为响应式
-    class Vue { //创建要给Vue的类
-        constructor(option) { //描述他的属性
-            this.$option = option || {}
-            this.$data = option.data || {} // 获取传入的data数据
-            this.$el = typeof(option.el) === 'string' ? document.querySelector(option.el) : option.el //获取dom
-            this._transProxy(this.$data) //定义个进行转化成响应式数据的方法并将data中的数据传入
-            new Observer(this.$data)
-            new Compiler(this)
-        }
-        _transProxy(data) {
-            Object.keys(data).forEach((key) => { //提取data中的每个属性并进行遍历
-                Object.defineProperty(this, key, { //由于使用的箭头函数所以这里的zhis指向的是Vue，向Vue根组件中添加data中的所有属性
-                    enumerable: true,
-                    configurable: true,
-                    get() {
-                        return data[key] //读取时返回最新的数据
-                    },
-                    set(newValue) {
-                        if (newValue === data[key]) return //如果最新的值和上次的值一样，则不进行更新
-                        console.log('属性变了')
-                        data[key] = newValue //把最新设置的值进行更新操作
-                    }
-
-                })
-            })
-        }
+  //模板
+  class Compiler {
+    constructor(vm) {
+      this.el = vm.$el
+      this.vm = vm
+      this.compile(this.el)
     }
+    //编译模板
+    compile(el) { //解析器 Compile：解析 Vue 模板指令，将模板中的变量都替换成数据，然后初始化渲染页面视图，并将每个指令对应的节点绑定更新函数，
+      //添加监听数据的订阅者，一旦数据有变动，收到通知，调用更新函数进行数据更新。
+      let childrenNodes = el.childNodes
+      Array.from(childrenNodes).forEach((children) => {
+        if (this.isTextNode(children)) {
+          this.compileText(children)
+        } else if (this.isElementNode(children)) {
+          this.compileElement(children)
+        }
+        if (children.childNodes && children.childNodes.length) {
+          this.compile(children)
+        }
+      })
+    }
+
+    compileText(node) { //编辑文本节点，处理差值表达式.这里有个小细节就是我们本来创立的n个文本节点结果出来了2n个，这是因为html的空白文本节点text,html会在每个标签后面加上一个换行文本节点所以产生了2n个，解决办法把标签写到一样或设置浮动或fontsize为0
+      let reg = /\{\{(.+)\}\}/ //利用正则表达式进行匹配插值表达式,其中.表示进行匹配任意的字符，+代表贪婪匹配，匹配前面的子表达式一次或多次
+      let value = node.textContent
+      if (reg.test(value)) {
+        let key = RegExp.$1.trim() //RegExp时js的内置正则表达式的对象，其中$1表示第一个使用()匹配到的内容，以此类推$2就是第二个原括号匹配到的内容
+        node.textContent = value.replace(reg, this.vm[key])
+        new Watch(this.vm, key, newValue => {
+          node.textContent = newValue
+          console.log(newValue)
+        })
+      }
+    }
+    compileElement(node) { //编译元素节点，处理指令
+      Array.from(node.attributes).forEach(attr => {
+        if (!this.isDirective(attr.name)) return
+        let name = attr.name.slice(2)
+        let value = attr.value
+        this.update(node, name, value)
+        console.log(node, name, value)
+      })
+    }
+    update(node, name, value) {
+      let fn = this[name + 'Update']
+      fn && this[name + 'Update'](node, this.vm[value], value)
+    }
+    textUpdate(node, value) {
+      node.textContent = value
+    }
+    modelUpdate(node, value, pro) {
+      console.log(this)
+      console.log(node, value)
+      node.value = this.vm[pro]
+      new Watch(this.vm, pro, newValue => {
+        node.value = newValue
+        console.log(newValue)
+      })
+      node.addEventListener('input', (e) => {
+        console.log('23', e.target.value)
+        this.vm[pro] = e.target.value
+      })
+    }
+    isDirective(attrName) {
+      return attrName.startsWith('v-')
+    }
+    isTextNode(node) {
+      return node.nodeType === 3 //判断节点是否为文本节点
+    }
+    isElementNode(node) {
+      return node.nodeType === 1 //判断节点是否为元素节点
+    }
+  }
+</script>
+<script>
+  class Observer { //创建观察者类，注意这个地方我走了弯路，由于涉及到对象里面还有对象的可能就必须采用递归的方法去给所有元素去设置setter和getter所有把每一部分的功能尽量封装为一个函数进行调用
+    //监听器 Observer：对数据对象进行遍历，包括子属性对象的属性，利用 Object.defineProperty() 对属性都加上 setter 和 getter。这样的话，给这个对象的某个值赋值，就会触发 setter，那么就能监听到了数据变化。
+    constructor(data) { //定义属性
+      this.zh(data) //把传进来的值通过这个方法转为响应式
+    }
+    zh(data) {
+      if (typeof data !== 'object' || !data) return //判断是否时引用类型，如果是引用类型的则需要递归就行遍历因为引用类型的数据可能里面还有对象或数组即需要进行递归
+      Object.keys(data).forEach(key => {
+        this.defindProxy1(data, key, data[key]) //循环遍历属性,这里需要注意必须把data[key]以形参传递下去，意思时复制了一份值，不然直接赋值本身会报错
+      })
+    }
+    defindProxy1(data, key, value) {
+      let that = this //注意里面this指向的变化
+      let dep = new Dep()
+    if(typeof value === "object") { this.zh(value) }//注意这是一个完善的地方，这里的情况是，判断传进来的值是个引用类型的，如果是进行递归，直到成为普通值
+      Object.defineProperty(data, key, {
+        enumerable: true,
+        configurable: true,
+        get() {
+          Dep.target && dep.AddSub(Dep.target)
+          console.log(Dep.target)
+          return value
+        },
+        set(newValue) {
+          if (newValue === value) return
+          console.log('woye')
+          value = newValue //这里把值赋值给value第三变量，value变量的处置为data[key]
+          that.zh(newValue) //注意这里也是一个小技巧，这里是为了防止如果给数据新增一个属性的值为引用类型那么也需要把这个属性设置为响应式的
+          dep.notify(newValue)
+          console.dir(dep.notify)
+        }
+
+      })
+    }
+  }
+</script>
+
+<script>
+  //手写一个实现数据拦截操作把传入的data数据全部转为响应式
+  class Vue { //创建要给Vue的类
+    constructor(option) { //描述他的属性
+      this.$option = option || {}
+      this.$data = option.data || {} // 获取传入的data数据
+      this.$el = typeof (option.el) === 'string' ? document.querySelector(option.el) : option.el //获取dom
+      this._transProxy(this.$data) //定义个进行转化成响应式数据的方法并将data中的数据传入
+      new Observer(this.$data)
+      console.log(this.$data)
+      new Compiler(this)
+    }
+    //把$data的数据代理到Vue属性上面
+    _transProxy(data) {
+      Object.keys(data).forEach((key) => { //提取data中的每个属性并进行遍历
+        Object.defineProperty(this, key, { //由于使用的箭头函数所以这里的zhis指向的是Vue，向Vue根组件中添加data中的所有属性
+          enumerable: true,
+          configurable: true,
+          get() {
+            return data[key] //读取时返回最新的数据
+          },
+          set(newValue) {
+            if (newValue === data[key]) return //如果最新的值和上次的值一样，则不进行更新
+            console.log('属性变了')
+            data[key] = newValue //把最新设置的值进行更新操作
+          }
+
+        })
+      })
+    }
+  }
 </script>
 
 
 
 <body>
-    <div id='app'>
-        <span v-text='height'>1</span>
-        <span>{{name}}</span>
-        <h3>{{msg}}</h3>
-        <input type="text" v-model='age'>
-        <h3>{{count}}</h3>
-    </div>
+  <div id='app'>
+    <span v-text='height'>1</span>
+    <span>{{name}}</span>
+    <h3>{{msg}}</h3>
+    <input type="text" v-model='age'>
+    <h3>{{age}}</h3>
+    <h3>{{age}}</h3>
+    <h3>{{age}}</h3>
+    <h3>{{age}}</h3>
+    <h3>{{age}}</h3>
+    <h3>{{age}}</h3>
+  </div>
 
 </body>
 
 <script>
-    let vm = new Vue({ //实例化Vue并传入参数
-        data: {
-            name: 'xiaohong',
-            age: 15,
-            height: 100,
-            count: 10,
-            msg: 'Hello world'
-        },
-        el: '#app'
-    })
+  let vm = new Vue({ //实例化Vue并传入参数
+    data: {
+      name: 'xiaohong',
+      age: 15,
+      height: 100,
+      count: 10,
+      msg: 'Hello world'
+    },
+    el: '#app'
+  })
+  setTimeout(() => vm.$data.age = '123213', 1200)
 </script>
 
 
