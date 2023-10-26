@@ -40,6 +40,7 @@
         
         #ul-imgs img {
             width: 1000px;
+            height: 800px;
         }
         
         #ul-idxs {
@@ -79,12 +80,12 @@
         
         #btn-left {
             left: 20px;
-            background-image: url(https://github.com/Coolboyzzzzz/FrontEndInterView/blob/main/image/left_ar.png?raw=true);
+            /* background-image: url(https://github.com/Coolboyzzzzz/FrontEndInterView/blob/main/image/left_ar.png?raw=true); */
         }
         
         #btn-right {
             right: 20px;
-            background-image: url(https://github.com/Coolboyzzzzz/FrontEndInterView/blob/main/image/right_ar.png?raw=true);
+            /* background-image: url(https://github.com/Coolboyzzzzz/FrontEndInterView/blob/main/image/right_ar.png?raw=true); */
         }
         
         #btn-left:hover,
@@ -100,22 +101,22 @@
             <div id="btn-left"></div>
             <ul id="ul-imgs" style="width:6000px; margin-left:0px;">
                 <li>
-                    <a href="#"><img src="https://github.com/Coolboyzzzzz/FrontEndInterView/blob/main/image/small001309ZlXg61645719189.jpg?raw=true" alt=""></a>
+                    <a href="#"><img src="https://img2.baidu.com/it/u=2537370952,3446004972&fm=253&fmt=auto&app=138&f=JPEG?w=1000&h=1000" alt=""></a>
                 </li>
                 <li>
-                    <a href="#"><img src="https://github.com/Coolboyzzzzz/FrontEndInterView/blob/main/image/small0028383FvYT1643300918.jpg?raw=true" alt=""></a>
+                    <a href="#"><img src="https://img0.baidu.com/it/u=1435639120,2241364006&fm=253&fmt=auto&app=138&f=JPEG?w=1000&h=1000" alt=""></a>
                 </li>
                 <li>
-                    <a href="#"><img src="https://github.com/Coolboyzzzzz/FrontEndInterView/blob/main/image/small002919f5FKu1644164959.jpg?raw=true" alt=""></a>
+                    <a href="#"><img src="https://lmg.jj20.com/up/allimg/tp08/51042223242816-lp.jpg?w=1422&h=800" alt=""></a>
                 </li>
                 <li>
-                    <a href="#"><img src="https://github.com/Coolboyzzzzz/FrontEndInterView/blob/main/image/small003031cObfG1643992231.jpg?raw=true" alt=""></a>
+                    <a href="#"><img src="https://lmg.jj20.com/up/allimg/tp05/19100122553C210-0-lp.jpg?w=1422&h=800" alt=""></a>
                 </li>
                 <li>
-                    <a href="#"><img src="https://github.com/Coolboyzzzzz/FrontEndInterView/blob/main/image/small004443MTnFb1644338683.jpg?raw=true" alt=""></a>
+                    <a href="#"><img src="https://img2.baidu.com/it/u=2868393532,862853407&fm=253&fmt=auto&app=120&f=JPEG?w=1280&h=800" alt=""></a>
                 </li>
                 <li>
-                    <a href="#"><img src="https://github.com/Coolboyzzzzz/FrontEndInterView/blob/main/image/small001309ZlXg61645719189.jpg?raw=true" alt=""></a>
+                    <a href="#"><img src="https://img2.baidu.com/it/u=2537370952,3446004972&fm=253&fmt=auto&app=138&f=JPEG?w=800&h=500" alt=""></a>
                 </li>
             </ul>
             <ul id="ul-idxs">
@@ -130,15 +131,26 @@
         </div>
     </main>
     <script>
+        let flag = true
         var i = 0 //表示当前显示的图片
         var time = 3000 //用于设置切换图片间隔时间
         var uimgs = document.getElementById('ul-imgs')
+        uimgs.ontransitionend = function (event) {
+            flag = true
+ console.log(2)
+};
+        uimgs.ontransitionrun = function (event) {
+            flag = false
+ console.log(2)
+};
         var dot = document.getElementById('ul-idxs')
         var dots = dot.children //取dots下面的几个小圆点的dom
         var count = 5 //表示有5张图片
         var wd = 1000 //用于设置每次轮播时让总体移动距离的基数，因为图片的大小就是1000px，所以设置为1000刚刚好
             //实现原理就是让所有要显示得照片利用浮动都排到一排，然后用一个可视得窗口滚动这个长图片显示我们想显示得照片，从而达到轮播得目的
         function moveTo(to) { //定义一个实现每隔规定时间自动进行轮播的函数，其中可以传入参数，传入的参数就代表想要正向轮播还是逆向轮播
+            // if(!flag) return
+
             if (to === -1) { //首先判断用户想要正向轮播还是逆向轮播
                 if (i === 0) { //当前位置时候为第一张图片（i=0）且用户点击向左滚动
                     i = 4 //那就直接把轮播图的位置变为倒数第二个
@@ -165,7 +177,7 @@
                 setTimeout(function() {
                         uimgs.className = ''
                         uimgs.style.marginLeft = 0
-                    }, 1500) //设置延时器，延迟执行把动画关掉，即把类名去掉，把marginLeft清空这样就看不出来切换图片因为最后一张和第一张一样
+                    }, 500) //设置延时器，延迟执行把动画关掉，即把类名去掉，把marginLeft清空这样就看不出来切换图片因为最后一张和第一张一样
             }
             for (var li of dots) {
                 li.className = ''

@@ -1,0 +1,196 @@
+<!-- <!DOCTYPE HTML>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0">
+  <title></title>
+  <style type="text/css">
+    div.img-box {
+      position: relative;
+    }
+
+    img {
+      width: 777px;
+      height: 160px;
+      position: absolute;
+    }
+
+    div.wrapper {
+      width: 777px;
+      height: 160px;
+      background: linear-gradient(#1a98ca, #1a98ca), linear-gradient(90deg, #ffffff33 1px, transparent 0, transparent 19px), linear-gradient(#ffffff33 1px, transparent 0, transparent 19px), linear-gradient(transparent, #1a98ca);
+      background-size: 100% 1.5%, 10% 100%, 100% 8%, 100% 100%;
+      background-repeat: no-repeat, repeat, repeat, no-repeat;
+      background-position: 0% 0%, 0 0, 0 0, 0 0;
+      /* 初始位置 */
+      clip-path: polygon(0% 0%, 100% 0%, 100% 1.5%, 0% 1.5%);
+      /* 添加动画效果 */
+      animation: move 2s infinite linear;
+    }
+
+    @keyframes move {
+      to {
+        /* background-position: 0 100%, 0 0, 0 0, 0 0; */
+        /* 终止位置 */
+        clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="img-box"><img src="./bg.png" alt="">
+    <div class="wrapper"></div>
+  </div>
+</body>
+
+</html> -->
+
+
+
+<!-- <div>
+
+
+  <div class="scan-content">
+    <img style="      width: 777px;
+    height: 160px;" src="bg.png" alt="" />
+
+
+    <div class="line"></div>
+  </div>
+
+
+</div>
+
+
+
+
+<style>
+  .line {
+    width: 777px;
+    height: 160px;
+    position: absolute;
+    left: 0;
+    top: 0;
+    /* background: linear-gradient(90deg, rgba(0, 255, 51, 0) 43%, #00ff33 211%); */
+    /* background: linear-gradient(270deg, rgba(0, 255, 51, 0) 43%, #00ff33 211%); */
+    /* border-left: 3px solid #00ff33;
+    transform: translateX(0);
+    background: linear-gradient(270deg, rgba(0, 255, 51, 0) 43%, #00ff33 211%); */
+    animation: radar-beam 5s linear infinite;
+
+  }
+
+
+  .scan-content {
+    position: relative;
+    /* animation: scan-content1 2s 1 alternate;
+    animation-timing-function: cubic-bezier(0.53, 0, 0.43, 0.99);
+    animation-delay: 1.4s; */
+    overflow: hidden;
+    width: 777px;
+    height: 160px;
+  }
+
+  @keyframes radar-beam {
+    0% {
+      border-right: 3px solid #00ff33;
+      transform: translateX(-100%);
+      background: linear-gradient(90deg, rgba(0, 255, 51, 0) 43%, #00ff33 211%);
+    }
+
+    49.9999999999% {
+      border-right: 3px solid #00ff33;
+      transform: translateX(0);
+      background: linear-gradient(90deg, rgba(0, 255, 51, 0) 43%, #00ff33 211%);
+    }
+
+    50% {
+      border-left: 3px solid #00ff33;
+      transform: translateX(100%);
+      background: linear-gradient(270deg, rgba(0, 255, 51, 0) 43%, #00ff33 211%);
+    }
+
+    100% {
+      border-left: 3px solid #00ff33;
+      transform: translateX(0);
+      background: linear-gradient(270deg, rgba(0, 255, 51, 0) 43%, #00ff33 211%);
+    }
+  }
+
+  @keyframes scan-content1 {
+    0% {
+      width: 0;
+    }
+
+    100% {
+      width: 777px;
+
+    }
+  }
+</style> -->
+
+
+
+<div>
+
+
+  <div class="scan-content">
+    <img style="      width: 777px;
+    height: 160px;" src="bg.png" alt="" />
+
+
+    <div class="line"></div>
+  </div>
+
+
+</div>
+
+
+
+
+<style>
+  .line {
+    width: 777px;
+    height: 160px;
+    position: absolute;
+    left: 0;
+    top: 0;
+    background: linear-gradient(90deg, rgba(0, 255, 51, 0) 43%, #00ff33 211%);
+    border-left: 3px solid #00ff33;
+    animation: radar-beam 5s linear infinite;
+  }
+
+
+  .scan-content {
+    position: relative;
+    /* animation: scan-content1 2s 1 alternate;
+    animation-timing-function: cubic-bezier(0.53, 0, 0.43, 0.99);
+    animation-delay: 1.4s; */
+    overflow: hidden;
+    width: 777px;
+    height: 160px;
+  }
+
+  @keyframes radar-beam {
+    0% {
+      transform: translateX(-100%);
+    }
+
+    100% {
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes scan-content1 {
+    0% {
+      width: 0;
+    }
+
+    100% {
+      width: 777px;
+
+    }
+  }
+</style>

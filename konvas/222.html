@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.min.js"></script>
+</head>
+
+<body>
+  <canvas id="canvas" width="800" height="400"></canvas>
+  <script>
+    const canvas = new fabric.Canvas('canvas');
+
+    // 创建皮带机背景
+    const beltBackground = new fabric.Rect({
+      left: 50,
+      top: 100,
+      width: 700,
+      height: 60,
+      fill: 'gray',
+    });
+
+    // 创建皮带机纹理图片
+    fabric.Image.fromURL('./bg.png', function (img) {
+      img.set({
+        left: 50,
+        top: 100,
+        width: 777,
+        height: 160,
+        // scaleX: beltBackground.width / img.width,
+        // scaleY: beltBackground.height / img.height,
+        rotateX: 20,
+        selectable: false,
+      });
+
+      // 将背景和纹理图片添加到画布
+      canvas.add(beltBackground, img);
+
+      // 皮带机动画函数
+      function animateBelt () {
+        beltBackground.left += 2;
+        img.left += 2;
+
+        if (beltBackground.left >= canvas.width) {
+          beltBackground.left = -beltBackground.width;
+          img.left = -img.width;
+        }
+
+        canvas.renderAll();
+        requestAnimationFrame(animateBelt);
+      }
+
+      animateBelt(); // 启动动画
+    });
+
+  </script>
+</body>
+
+</html>

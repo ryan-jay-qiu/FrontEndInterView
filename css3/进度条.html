@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <div class="process">
+    <div class="bc"></div>
+    <div class="info"></div>
+  </div>
+</body>
+<style>
+  .process {
+    width: 530px;
+    overflow-y: visible;
+    overflow-x: clip;
+    position: relative;
+  }
+
+  .bc {
+
+    height: 4px;
+    width: 100%;
+    opacity: 0.2;
+
+    /* 荧光蓝绿 */
+    background: #73DCFF;
+  }
+
+  .info {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 10%;
+    transition: width 0.3s ease-in;
+    height: 4px;
+    opacity: 1;
+    /* 荧光蓝绿 */
+    background: #73DCFF;
+
+  }
+
+  .info::after {
+    position: absolute;
+    content: '';
+    top: 50%;
+    right: 0;
+    width: 12px;
+    height: 12px;
+    transform: translateY(-50%);
+    background: #3BFFA7;
+  }
+</style>
+
+</html>

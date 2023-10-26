@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="100%" height="100%" viewBox="0 0 200 100">
+  <style>
+    @keyframes arrowAnimation {
+      0% {
+        opacity: 0;
+        transform: translate(-100px, 0);
+      }
+      50% {
+        opacity: 1;
+      }
+      100% {
+        opacity: 0;
+        transform: translate(200px, 0);
+      }
+    }
+
+    .arrow-container {
+      position: relative;
+      width: 200px;
+      height: 100px;
+    }
+
+    .arrow {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      animation: arrowAnimation 1.2s ease-in-out infinite;
+      opacity: 0;
+    }
+
+    .arrow:nth-child(1) {
+      animation-delay: 0s;
+    }
+
+    .arrow:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+
+    .arrow:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+
+    .arrow:nth-child(4) {
+      animation-delay: 0.6s;
+    }
+
+    .arrow:nth-child(5) {
+      animation-delay: 0.8s;
+    }
+
+    .arrow:nth-child(6) {
+      animation-delay: 1s;
+    }
+  </style>
+  <g class="arrow-container">
+    <!-- 修改箭头路径和方向 -->
+    <path d="M160,42.5L111,23L107.5,31.5L137,42.5L97,53L94.5,60L160,42.5Z" fill="#CFFFFF" fill-opacity="1" class="arrow" />
+    <path d="M160,42.5L111,23L107.5,31.5L137,42.5L97,53L94.5,60L160,42.5Z" fill="#CFFFFF" fill-opacity="1" class="arrow" />
+    <path d="M160,42.5L111,23L107.5,31.5L137,42.5L97,53L94.5,60L160,42.5Z" fill="#CFFFFF" fill-opacity="1" class="arrow" />
+    <path d="M160,42.5L111,23L107.5,31.5L137,42.5L97,53L94.5,60L160,42.5Z" fill="#CFFFFF" fill-opacity="1" class="arrow" />
+    <path d="M160,42.5L111,23L107.5,31.5L137,42.5L97,53L94.5,60L160,42.5Z" fill="#CFFFFF" fill-opacity="1" class="arrow" />
+    <path d="M160,42.5L111,23L107.5,31.5L137,42.5L97,53L94.5,60L160,42.5Z" fill="#CFFFFF" fill-opacity="1" class="arrow" />
+  </g>
+</svg>
+
+
+
+

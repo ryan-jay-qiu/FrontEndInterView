@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+<body>
+  <ul>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+  </ul>
+  <style>
+  ul{
+    --color-aside:rgb(0,207,207);
+    --color-front:rgb(0,0,0);
+    position:relative;
+    height:300px;
+    width:300px;
+    list-style:none;
+    perspective: 2000px;
+    display: flex;
+    justify-content: center;
+    transform-origin: center;
+    align-items: center;
+    margin:100px auto;
+    transform-style:preserve-3d;
+    transform: rotateX(0deg) rotateY(82deg) rotateZ(45deg);
+    transition: all 0.6s linear;
+    /* animation: ani 5s  ; */
+  }
+  ul:hover{
+    /* transform: rotate3d(1, 0, 1, 270deg); */
+    transform: rotateX(0deg) rotateY(270deg) rotateZ(45deg);
+  }
+  li{
+    box-shadow: 0 0 10px var(--color-aside);
+    position:absolute;
+    height:300px;
+    width:300px;
+    font-size:5em;
+    text-align:center;
+    line-height:300px;
+  }
+  li:nth-child(1){
+    /* background-color: green; */
+    background-color:var(--color-front) ;
+    transform: translateZ(5px); 
+  }
+  li:nth-child(2){
+    /* background-color:yellow; */
+    background-color:var(--color-aside);
+    
+    transform: rotateY(90deg) translateZ(150px);
+    width: 10px;
+  }
+  li:nth-child(3){
+    /* background-color:orange; */
+    background-color:var(--color-aside);
+    transform: rotateX(90deg) translateZ(150px);
+    height: 10px;
+  }
+  li:nth-child(4){
+    /* background-color:red; */
+    background-color:var(--color-aside);
+    transform: rotateX(-90deg) translateZ(150px);
+    height: 10px;
+  }
+  li:nth-child(5){
+    /* background-color:blue; */
+    background-color:var(--color-aside) ;
+
+    transform: rotateY(-90deg) translateZ(150px);  
+    width: 10px;
+    height: 301px;
+  }
+  li:nth-child(6){
+    /* background-color:purple; */
+    /* background-color:var(--color-aside); */
+    background-color:var(--color-front) ;
+    transform: rotateX(180deg) translateZ(5px);
+  }
+ 
+  @keyframes ani{
+    
+    100%{
+      transform:rotateX(360deg) rotateY(360deg) rotateZ(360deg);
+    }
+  }
+  </style>
+ 
+</body>
+</html>

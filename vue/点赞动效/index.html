@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>爱心</title>
+  <script src="https://unpkg.com/vue@next"></script>
+</head>
+<style>
+</style>
+
+<body>
+  <div style="font-size:48px;text-align: center;">给你杰哥点赞</div>
+  <div style="text-align: center;" id="app">
+  </div>
+  <div class="bounce">
+    <span class="letter">苏</span>
+    <span class="letter">甜</span>
+    <span class="letter">慧</span>
+    <span class="letter">I</span>
+    <span class="letter">♥</span>
+    <span class="letter">O</span>
+          <span class="letter">♥</span>
+          <span class="letter">V</span>
+          <span class="letter">♥</span>
+          <span class="letter">E</span>
+          <span class="letter">♥</span>
+          <span class="letter">♥</span>
+  </div>
+  
+</body>
+
+</html>
+<script>
+  const { ref, createApp, defineProps, computed } = Vue;
+  const numText = {
+    props: ['isLike'],
+    setup(props, context) {
+      // 变量部分
+      console.log(props.isLike)
+      const isLikeNum = computed(() => props.isLike - 0 + 20)
+      return {
+        isLikeNum
+      }
+    },
+    template:
+      `<div class="like-num-wrapper">
+    <transition :name="isLike ? 'plus' : 'minus'">
+        <div class="like-num" :style="{color: isLike ? 'red': '#333'}" :key="isLike">
+            {{isLikeNum}}
+        </div>
+    </transition>
+    </div>`
+  }
+  const vue3Composition = {
+    setup() {
+      // 变量部分
+      const isLike = Vue.ref(false)
+      console.log(isLike, Vue)
+      const change = () => {
+        isLike.value = !isLike.value
+      }
+      return {
+        change,
+        isLike
+      }
+    },
+    components: {
+      numText
+    },
+    template: `
+  <div class="container">
+    <transition :name=" !isLike ? 'zoom' : '' " mode="out-in">
+      <svg @click="change" v-if="isLike" key="like" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2668" width="200" height="200"><path d="M512 901.746939c-13.583673 0-26.122449-4.179592-37.093878-13.061225-8.881633-7.314286-225.697959-175.020408-312.424489-311.379592C133.746939 532.37551 94.040816 471.24898 94.040816 384.522449c0-144.718367 108.146939-262.269388 240.326531-262.269388 67.395918 0 131.657143 30.82449 177.632653 84.636735 45.453061-54.334694 109.191837-84.636735 177.110204-84.636735 132.702041 0 240.326531 117.55102 240.326531 262.269388 0 85.159184-37.093878 143.673469-67.395919 191.216327l-1.044898 1.567346c-86.726531 136.359184-303.542857 304.587755-312.424489 311.379592-10.44898 8.359184-22.987755 13.061224-36.571429 13.061225z" fill="gary" p-id="2669"></path></svg>
+      <svg @click="change" v-else key="unlike" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2668" width="200" height="200"><path d="M512 901.746939c-13.583673 0-26.122449-4.179592-37.093878-13.061225-8.881633-7.314286-225.697959-175.020408-312.424489-311.379592C133.746939 532.37551 94.040816 471.24898 94.040816 384.522449c0-144.718367 108.146939-262.269388 240.326531-262.269388 67.395918 0 131.657143 30.82449 177.632653 84.636735 45.453061-54.334694 109.191837-84.636735 177.110204-84.636735 132.702041 0 240.326531 117.55102 240.326531 262.269388 0 85.159184-37.093878 143.673469-67.395919 191.216327l-1.044898 1.567346c-86.726531 136.359184-303.542857 304.587755-312.424489 311.379592-10.44898 8.359184-22.987755 13.061224-36.571429 13.061225z" fill="#dbdbdb" p-id="2669"></path></svg>
+    </transition>
+    <numText :is-like='isLike' />
+  </div>
+`
+  }
+  const dom = document.documentElement;
+  let flag = true
+// setInterval(() => {
+//   dom.style.setProperty("--color", flag ? "while" : "black")
+//   flag = !flag
+// },10)
+  const app = createApp(vue3Composition).mount("#app");//初始化
+</script>
+<style>
+  :root{
+    --color: white
+  }
+  html{
+    background: var(--color);
+    width: 100vw;
+    height: 100vh;
+    background: url("./R.gif") no-repeat;
+    background-size: cover;
+  }
+  .container {
+    width: 100%;
+    height: 300px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  /** 动画进行时的class **/
+  .zoom-enter-active,
+  .zoom-leave-active {
+    transition: all .15s cubic-bezier(0.42, 0, 0.34, 1.55);
+  }
+
+  /** 设置进场开始的状态和离场结束的状态，都是缩放到0 **/
+  .zoom-enter-from,
+  .zoom-leave-to {
+    transform: scale(0);
+  }
+
+  /** 设置进场结束的状态和离场开始的状态, 都是缩放到1 **/
+  .zoom-enter-to,
+  .zoom-leave-from {
+    transform: scale(1);
+  }
+
+  .like-num-wrapper {
+    position: relative;
+    text-align: center;
+    font-size: 16px;
+    height: 40px;
+    overflow-y: hidden;
+
+  }
+
+  .like-num-wrapper .like-num {
+    top: 0;
+    left: 0;
+    position: relative;
+    line-height: 40px;
+  }
+
+  .plus-enter-active,
+  .plus-leave-active {
+    transition: all .3s ease-in;
+  }
+
+  .plus-enter-from,
+  .plus-leave-from {
+    transform: translateY(0);
+  }
+
+  .plus-enter-to,
+  .plus-leave-to {
+    transform: translateY(-40px);
+  }
+
+
+  .minus-enter-active,
+  .minus-leave-active {
+    transition: all .3s ease-in;
+  }
+
+  .minus-enter-from {
+    transform: translateY(-80px);
+  }
+
+  .minus-enter-to {
+    transform: translateY(-40px);
+  }
+
+  .minus-leave-from {
+    transform: translateY(0);
+  }
+
+  .minus-leave-to {
+    transform: translateY(40px);
+  }
+  .bounce {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+	color: #000;
+  height: 100%;
+  font: normal bold 22px "Product Sans", sans-serif;
+  white-space: wrap;
+}
+
+.letter {
+  animation: bounce 0.75s cubic-bezier(0.05, 0, 0.2, 1) infinite alternate;
+  display: inline-block;
+  transform: translate3d(0, 0, 0);
+  margin-top: 0.5em;
+  text-shadow: rgba(255, 255, 255, 0.4) 0 0 0.05em;
+  font: normal 500 22px 'Varela Round', sans-serif;
+}
+.letter:nth-child(1) {
+  animation-delay: 0s;
+  color: red;
+}
+.letter:nth-child(2) {
+  animation-delay: 0.0333333333s;
+  color: green;
+}
+.letter:nth-child(3) {
+  animation-delay: 0.1333333333s;
+  color: blue;
+}
+.letter:nth-child(4) {
+  animation-delay: 0.2333333333s;
+}
+.letter:nth-child(5) {
+  animation-delay: 0.3333333333s;
+}
+.letter:nth-child(6) {
+  animation-delay: 0.4333333333s;
+}
+.letter:nth-child(7) {
+  animation-delay: 0.5333333333s;
+}
+.letter:nth-child(8) {
+  animation-delay: 0.6333333333s;
+}
+.letter:nth-child(9) {
+  animation-delay: 0.7333333333s;
+}
+.letter:nth-child(10) {
+  animation-delay: 0.8333333333s;
+}
+.letter:nth-child(11) {
+  animation-delay: 0.9333333333s;
+}
+
+@keyframes bounce {
+  0% {
+    transform: translate3d(0, 0, 0);
+    text-shadow: rgba(255, 255, 255, 0.4) 0 0 0.05em;
+  }
+  100% {
+    transform: translate3d(0, -1em, 0);
+    text-shadow: rgba(255, 255, 255, 0.4) 0 1em 0.35em;
+  }
+}
+</style>

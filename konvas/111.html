@@ -1,0 +1,346 @@
+<!-- <!DOCTYPE html>
+<html>
+<head>
+  <style>
+    canvas {
+      border: 1px solid #000;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="networkCanvas" width="800" height="600"></canvas>
+  <script>
+    // 获取Canvas元素
+    const canvas = document.getElementById('networkCanvas');
+    const ctx = canvas.getContext('2d');
+
+    // 绘制网络设备
+    function drawDevice(x, y, deviceName) {
+      ctx.fillStyle = 'blue';
+      ctx.fillRect(x, y, 50, 30);
+      ctx.font = '12px Arial';
+      ctx.fillStyle = 'white';
+      ctx.fillText(deviceName, x + 5, y + 20);
+    }
+
+    // 绘制连接线
+    function drawConnection(x1, y1, x2, y2) {
+      ctx.strokeStyle = 'black';
+      ctx.beginPath();
+      ctx.moveTo(x1, y1);
+      ctx.lineTo(x2, y2);
+      ctx.stroke();
+    }
+
+    // 清空Canvas
+    function clearCanvas() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+
+    // 示例网络拓扑
+    function drawNetworkTopology() {
+      clearCanvas();
+      drawDevice(50, 50, 'Router');
+      drawDevice(150, 50, 'Switch');
+      drawDevice(250, 50, 'Server');
+      drawDevice(50, 150, 'PC 1');
+      drawDevice(150, 150, 'PC 2');
+      drawDevice(250, 150, 'PC 3');
+      drawConnection(75, 65, 165, 65);
+      drawConnection(75, 165, 165, 65);
+      drawConnection(175, 65, 275, 65);
+      drawConnection(175, 165, 275, 65);
+    }
+
+    // 绘制初始网络拓扑
+    drawNetworkTopology();
+  </script>
+</body>
+</html> -->
+
+<!-- <!DOCTYPE html>
+<html>
+
+<head>
+  <style>
+    canvas {
+      border: 1px solid #000;
+    }
+  </style>
+</head>
+
+<body>
+  <canvas id="networkCanvas" width="800" height="600"></canvas>
+  <button id="startAnimationButton">开始动画</button>
+  <button id="pauseAnimationButton">暂停动画</button>
+  <script>
+    class NetworkTopology {
+      constructor() {
+        this.canvas = document.getElementById('networkCanvas');
+        this.ctx = this.canvas.getContext('2d');
+        this.animationId = null;
+        this.isAnimating = false;
+        this.deviceIdCounter = 0;
+        this.lineIdCounter = 0;
+        this.devices = [];
+        this.lines = [];
+      }
+
+      addDevice (x, y, deviceName) {
+        const deviceId = this.deviceIdCounter++;
+        this.devices.push({ id: deviceId, x, y, name: deviceName });
+        return deviceId;
+      }
+
+      addLine (startX, startY, endX, endY) {
+        const lineId = this.lineIdCounter++;
+        this.lines.push({ id: lineId, startX, startY, endX, endY });
+        return lineId;
+      }
+
+      drawDevice (x, y, deviceName) {
+        this.ctx.fillStyle = 'blue';
+        this.ctx.fillRect(x, y, 50, 30);
+        this.ctx.font = '12px Arial';
+        this.ctx.fillStyle = 'white';
+        this.ctx.fillText(deviceName, x + 5, y + 20);
+      }
+
+      drawConnection (startX, startY, endX, endY) {
+        this.ctx.strokeStyle = 'black';
+        this.ctx.beginPath();
+        this.ctx.moveTo(startX, startY);
+        this.ctx.lineTo(endX, endY);
+        this.ctx.stroke();
+      }
+
+      clearCanvas () {
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+      }
+
+      drawNetworkTopology () {
+        this.clearCanvas();
+        this.devices.forEach(device => {
+          this.drawDevice(device.x, device.y, device.name);
+        });
+
+        this.lines.forEach(line => {
+          this.drawConnection(line.startX, line.startY, line.endX, line.endY);
+        });
+      }
+
+      animateLines () {
+        this.lines.forEach(line => {
+          line.startX += 2; // 调整线的动画速度
+          line.endX += 2;
+        });
+        this.drawNetworkTopology();
+        if (this.isAnimating) {
+          this.animationId = requestAnimationFrame(() => this.animateLines());
+        }
+      }
+
+      startAnimation () {
+        this.isAnimating = true;
+        this.animateLines();
+      }
+
+      pauseAnimation () {
+        this.isAnimating = false;
+        cancelAnimationFrame(this.animationId);
+      }
+    }
+
+    const networkTopology = new NetworkTopology();
+    networkTopology.addDevice(50, 50, 'Router');
+    networkTopology.addDevice(150, 50, 'Switch');
+    networkTopology.addDevice(250, 50, 'Server');
+    networkTopology.addDevice(50, 150, 'PC 1');
+    networkTopology.addDevice(150, 150, 'PC 2');
+    networkTopology.addDevice(250, 150, 'PC 3');
+    networkTopology.addLine(75, 65, 165, 65);
+    networkTopology.addLine(75, 165, 165, 65);
+    networkTopology.addLine(175, 65, 275, 65);
+    networkTopology.addLine(175, 165, 275, 65);
+
+    document.getElementById('startAnimationButton').addEventListener('click', () => {
+      networkTopology.startAnimation();
+    });
+
+    document.getElementById('pauseAnimationButton').addEventListener('click', () => {
+      networkTopology.pauseAnimation();
+    });
+
+    // 初始绘制网络拓扑
+    networkTopology.drawNetworkTopology();
+  </script>
+</body>
+
+</html> -->
+
+
+<!DOCTYPE html>
+<html>
+
+<head>
+  <style>
+    canvas {
+      border: 1px solid #000;
+    }
+  </style>
+</head>
+
+<body>
+  <canvas id="networkCanvas" width="800" height="600"></canvas>
+  <button id="startAnimationButton">开始动画</button>
+  <button id="pauseAnimationButton">暂停动画</button>
+  <script>
+    class NetworkTopology {
+      constructor() {
+        this.canvas = document.getElementById('networkCanvas');
+        this.ctx = this.canvas.getContext('2d');
+        this.animationId = null;
+        this.isAnimating = false;
+        this.id = 0;
+        this.devices = {};
+        this.lines = {};
+        this.dashedLines = {}
+      }
+
+      addDevice (x, y, deviceName, id) {
+        const deviceId = id ? id : this.id++;
+        this.devices[deviceId] = { id: deviceId, x, y, name: deviceName, isAnimating: false };
+        return deviceId;
+      }
+
+      addLine (startX, startY, endX, endY, id) {
+        const lineId = id ? id : this.id++;
+        this.lines[lineId] = { id: lineId, startX, startY, endX, endY, isAnimating: false };
+        return lineId;
+      }
+
+      addDashedLine (startX, startY, endX, endY, id) {
+        const lineId = id ? id : this.id++;
+        this.dashedLines[lineId] = { id: lineId, startX, startY, endX, endY, isAnimating: false, dashOffset: 10 };
+        return lineId;
+      }
+
+      drawDevice (x, y, deviceName) {
+        this.ctx.fillStyle = 'blue';
+
+        this.ctx.fillRect(x, y, 50, 30);
+        this.ctx.font = '12px Arial';
+        this.ctx.fillStyle = 'white';
+        this.ctx.fillText(deviceName, x + 5, y + 20);
+      }
+
+      drawDashedLine (startX, startY, endX, endY, dashOffset = 10) {
+        this.ctx.strokeStyle = 'black';
+        this.ctx.setLineDash([5, 5]); // 设置虚线的线段间隔
+        this.ctx.lineDashOffset = dashOffset;
+        this.ctx.beginPath();
+        this.ctx.moveTo(startX, startY);
+        this.ctx.lineTo(endX, endY);
+        this.ctx.stroke();
+      }
+
+      drawConnection (startX, startY, endX, endY) {
+        this.ctx.strokeStyle = 'black';
+        this.ctx.beginPath();
+        this.ctx.moveTo(startX, startY);
+        this.ctx.lineTo(endX, endY);
+        this.ctx.stroke();
+      }
+
+      clearCanvas () {
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+      }
+
+      drawNetworkTopology () {
+        this.clearCanvas();
+        Object.values(this.devices).forEach(device => {
+          this.drawDevice(device.x, device.y, device.name);
+        });
+
+        Object.values(this.lines).forEach(line => {
+          console.log(line)
+          this.drawConnection(line.startX, line.startY, line.endX, line.endY);
+        });
+        Object.values(this.dashedLines).forEach(line => {
+          console.log(line)
+          // line.dashOffset = 10
+          this.drawDashedLine(line.startX, line.startY, line.endX, line.endY, line.dashOffset);
+        });
+      }
+
+      animateLines () {
+        Object.values(this.lines).forEach(line => {
+          console.log(line.isAnimating)
+          if (line.isAnimating) {
+            line.startX += 2; // 调整线的动画速度
+            line.endX += 2;
+          }
+        });
+        Object.values(this.dashedLines).forEach(dashedLine => {
+          console.log('das', dashedLine)
+          if (dashedLine.isAnimating) {
+            dashedLine.dashOffset++; // 逐渐增加虚线的偏移量
+            if (dashedLine.dashOffset > 10) {
+              dashedLine.dashOffset = 0; // 当达到一定值时，重置虚线偏移量
+            }
+          }
+        });
+        this.drawNetworkTopology();
+        this.ctx.setLineDash([]); // 重置虚线状态
+        if (this.isAnimating) {
+          this.animationId = requestAnimationFrame(() => this.animateLines());
+        }
+      }
+
+      startAnimation () {
+        this.isAnimating = true;
+        // Object.values(this.lines).forEach(line => {
+        //   line.isAnimating = true;
+        // });
+        this.animateLines();
+      }
+
+      pauseAnimation () {
+        this.isAnimating = false;
+        cancelAnimationFrame(this.animationId);
+        // Object.values(this.lines).forEach(line => {
+        //   line.isAnimating = false;
+        // });
+      }
+    }
+
+    const networkTopology = new NetworkTopology();
+    const line5Id = networkTopology.addDashedLine(185, 185, 285, 85);
+    const routerId = networkTopology.addDevice(50, 50, 'Router');
+    const switchId = networkTopology.addDevice(150, 50, 'Switch');
+    const serverId = networkTopology.addDevice(250, 50, 'Server');
+    const pc1Id = networkTopology.addDevice(50, 150, 'PC 1');
+    const pc2Id = networkTopology.addDevice(150, 150, 'PC 2');
+    const pc3Id = networkTopology.addDevice(250, 150, 'PC 3');
+
+    const line1Id = networkTopology.addLine(75, 65, 165, 65);
+    const line2Id = networkTopology.addLine(75, 165, 165, 65);
+    const line3Id = networkTopology.addLine(175, 65, 275, 65);
+    const line4Id = networkTopology.addLine(175, 165, 275, 65);
+
+    networkTopology.lines[line4Id].isAnimating = true
+    // console.log(networkTopology.dashedLines[line5Id])
+    document.getElementById('startAnimationButton').addEventListener('click', () => {
+      networkTopology.startAnimation();
+    });
+
+    document.getElementById('pauseAnimationButton').addEventListener('click', () => {
+      networkTopology.pauseAnimation();
+    });
+
+    // 初始绘制网络拓扑
+    networkTopology.drawNetworkTopology();
+  </script>
+</body>
+
+</html>

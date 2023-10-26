@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="zn">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- 引用video.js -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/video.js/8.3.0/video-js.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/video.js/8.3.0/video.min.js"></script>
+    <video
+    id="my-player"
+    class="video-js"
+    controls
+    preload="auto"
+    poster="http://vjs.zencdn.net/v/oceans.png"
+    data-setup='{}'>
+  <!-- <source src="http://open.ys7.com/v3/openlive/L48582146_8_2.m3u8?expire=1721368746&id=603949350968565760&t=c615d07842352e77332cd448633d92fa8c08f10a15b949791f0e18130febdfa0&ev=100" type="application/x-mpegURL"></source> -->
+  <source src="http://open.ys7.com/v3/openlive/L48582146_8_2.m3u8?expire=1721368746&id=603949350968565760&t=c615d07842352e77332cd448633d92fa8c08f10a15b949791f0e18130febdfa0&ev=100" type="application/x-mpegURL"></source>
+  <p class="vjs-no-js">
+    To view this video please enable JavaScript, and consider upgrading to a
+    web browser that
+    <a href="https://videojs.com/html5-video-support/" target="_blank">
+      supports HTML5 video
+    </a>
+  </p>
+</video>
+    <script>
+var player = videojs('my-player');
+    </script>
+  </head>
+</html>

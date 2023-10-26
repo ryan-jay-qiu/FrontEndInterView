@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    html,body {
+      margin: 0;
+      padding: 0;
+      background-color: #001122;
+      /* 全屏 */
+      width: 100%;
+      height: 100%;
+      /* 清空字号，免得影响 svg */
+      line-height: 0;
+      font-size: 0;
+    }
+  </style>
+</head>
+<body>
+  <!-- animateMotion
+    attributeType: 标签类型
+    attributeName: 需要支持动画的属性
+    type: 子属性
+    begin: 动画开始时机
+    dur: 动画时间
+    fill: freeze（停留在最后）、none（默认，回到起点）
+    repeatCount: 动画次数，indefinite(无限次)，默认 1
+    path: 运行轨迹
+    rotate: auto（自动根据轨迹调整好角度）、none(默认，固定角度)
+    -->
+  <!-- svg -->
+  <svg width="100%" height="100%" viewBox="-400 -400 800 800">
+    <!-- 需要执行动画的元素 -->
+    <rect x="0" y="0" width="40" height="40" fill="rgba(0, 255, 255, 0.5)">
+
+      <!-- 方式一 -->
+      <animateMotion
+        path="M 0 0 L 100 100 A 200 200 0 1 0 0 -100"
+        dur="3s"
+        rotate="auto"/>
+
+      <!-- 方式二 -->
+      <animateMotion
+        dur="3s"
+        rotate="auto">
+        <mpath xlink:href="#motion-path"/>
+      </animateMotion>
+    </rect>
+    <!-- 轨迹 -->
+    <!-- <path  d="M 0 0 L 100 100 A 200 200 0 1 0 0 -100" fill="none" stroke="green"/> -->
+    <ellipse id="motion-path" cx="200" cy="117" rx="116.25" ry="116.25" fill-opacity="0" stroke-opacity="0.20000000298023224" stroke="#FFFFFF" fill="none" stroke-width="1.5"/>
+  </svg>
+</body>
+<script>
+
+ alert(window.navigator.userAgent) 
+</script>
+</html>

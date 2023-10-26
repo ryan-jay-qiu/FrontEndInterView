@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <script src="https://unpkg.com/konva@4.0.18/konva.min.js"></script>
+  <meta charset="utf-8" />
+  <title>Konva Linear Easing Demo</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background-color: #f0f0f0;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="container"></div>
+  <script>
+    var width = window.innerWidth;
+    var height = window.innerHeight;
+
+    var stage = new Konva.Stage({
+      container: 'container',
+      width: width,
+      height: height
+    });
+
+    var layer = new Konva.Layer();
+
+    var rect = new Konva.Rect({
+      x: 505,
+      y: 205,
+      width: 100,
+      height: 50,
+      fill: 'green',
+      stroke: 'black',
+      strokeWidth: 2,
+      opacity: 0.2,
+      offset: {
+        x: 50,
+        y: 25
+      }
+    });
+    rect.trans
+    layer.add(rect);
+    stage.add(layer);
+
+    // the tween has to be created after the node has been added to the layer
+    // var tween = new Konva.Tween({
+    //   node: rect,
+    //   duration: 1,
+    //   fill: 'red',
+    //   // angle: 360,
+    //   rotation: Math.PI * 100,
+    //   yoyo: true, //是否进行循环播放
+    // });
+    var anim = new Konva.Animation(function (frame) {
+      rect.rotate(0.5);
+    }, layer);
+    anim.start();
+    // start tween after 2 seconds
+    setTimeout(function () {
+
+    }, 2000);
+    // tween.play();
+  </script>
+</body>
+
+</html>
